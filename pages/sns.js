@@ -169,7 +169,10 @@ const PlaceCard = styled.div`
 `;
 
 const CommentSection = styled.div`
-  padding: 0 16px 12px 16px;
+  width: 100vw;
+  max-width: 480px;
+  padding: 0 14px 12px 14px;
+  box-sizing: border-box;
 `;
 
 const CommentList = styled.div`
