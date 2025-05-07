@@ -191,6 +191,10 @@ function Model() {
   useEffect(() => {
     if (!modelRef.current) return;
     
+    // 모델 구조 확인을 위한 디버깅
+    console.log('Model Structure:', modelRef.current);
+    console.log('Children:', modelRef.current.children);
+    
     const animate = () => {
       if (modelRef.current) {
         // 위아래로 부드럽게 움직이는 애니메이션 (속도 증가)
@@ -201,6 +205,9 @@ function Model() {
         if (arms) {
           // 팔을 앞뒤로 움직이는 애니메이션
           arms.rotation.x = Math.sin(Date.now() * 0.003) * 0.3;
+        } else {
+          // 팔 본을 찾지 못했을 때의 디버깅
+          console.log('Available children names:', modelRef.current.children.map(child => child.name));
         }
       }
       requestAnimationFrame(animate);
