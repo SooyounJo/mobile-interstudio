@@ -5,7 +5,11 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import React, { Suspense } from 'react';
 import { TextureLoader } from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Link from 'next/link';
+
+// glTF 로더를 위한 필수 코드
+useGLTF.preload('/ts.glb');
 
 const Container = styled.div`
   width: 100%;
@@ -184,8 +188,4 @@ export default function Home() {
       </Container>
     </>
   );
-}
-
-// glTF 로더를 위한 필수 코드
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-useGLTF.preload('/ts.glb'); 
+} 
