@@ -69,48 +69,51 @@ const FollowBtn = styled.button`
 const FeedCard = styled.div`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 18px;
-  margin: 0 auto 12px auto;
+  background: #fafdff;
+  border-radius: 22px;
+  box-shadow: 0 4px 24px 0 #2563eb18, 0 1.5px 0 #2563eb11;
+  border: 1.5px solid #e3eafc;
+  padding: 22px 0 18px 0;
+  margin: 0 auto 22px auto;
+  position: relative;
 `;
 
 const FeedImg = styled.img`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  height: 260px;
+  height: 240px;
   object-fit: cover;
   border-radius: 18px;
-  margin-top: 0;
-  transition: box-shadow 0.2s;
-  box-shadow: 0 2px 8px #2563eb22;
+  margin: 0 auto 12px auto;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  box-shadow: 0 2px 12px #2563eb22;
+  padding-left: 18px;
+  padding-right: 18px;
+  box-sizing: border-box;
 `;
 
 const MapImg = styled.img`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  height: 260px;
+  height: 240px;
   object-fit: cover;
   border-radius: 18px;
-  margin-top: 0;
+  margin: 0 auto 12px auto;
+  display: block;
   border: 2px solid #2563eb44;
   background: #eaf1ff;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  padding-left: 18px;
+  padding-right: 18px;
+  box-sizing: border-box;
 `;
 
 const SlideWrap = styled.div`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  height: 260px;
+  height: 240px;
   overflow: hidden;
   position: relative;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 8px auto;
 `;
 
 const SlideInner = styled.div`
@@ -136,47 +139,53 @@ const SlideDot = styled.div`
   background: ${props => props.active ? blue : '#cfd8dc'};
 `;
 
-const FeedText = styled.div`
-  padding: 12px 0 0 0;
-  font-size: 16px;
+const FeedTitle = styled.div`
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
   color: ${blue};
-  font-weight: 500;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 18px;
+  padding-right: 18px;
 `;
 
 const FeedMeta = styled.div`
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 8px 0 0 0;
-  color: ${blue};
-  font-size: 14px;
-  text-align: left;
-`;
-
-const FeedTitle = styled.div`
-  font-size: 18px;
-  font-weight: 700;
-  margin: 12px 0 4px 0;
-  color: ${blue};
-  text-align: left;
-`;
-
-const PlaceCard = styled.div`
-  width: 100%;
-  max-width: ${COMMON_WIDTH};
-  background: #eaf1ff;
-  border: 2px solid #2563eb;
-  border-radius: 18px;
-  padding: 16px 18px 16px 18px;
-  color: ${blue};
+  gap: 10px;
+  padding: 6px 18px 0 18px;
+  color: #7a8bb7;
   font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 4px 16px #2563eb33, 0 1.5px 0 #2563eb44;
-  margin: 18px auto 18px auto;
   text-align: left;
-  letter-spacing: 0.01em;
-  box-sizing: border-box;
+  margin-bottom: 8px;
+`;
+
+const FeedText = styled.div`
+  padding: 0 18px 0 18px;
+  font-size: 15px;
+  color: ${blue};
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 8px;
+`;
+
+const SaveMemoryButton = styled.button`
+  background: #fff;
+  color: #2563eb;
+  border: 1.2px solid #2563eb;
+  border-radius: 8px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: background 0.15s;
+  &:hover {
+    background: #eaf1ff;
+  }
 `;
 
 const CommentSection = styled.div`
@@ -257,7 +266,7 @@ const feedData = [
     meta: '2일 전 · 1,200 좋아요 · 300 공유',
     place: '서울 카페거리',
     placeDesc: '서울의 감성적인 카페들이 모여있는 거리. 다양한 커피와 디저트를 즐길 수 있어요.',
-    map: 'https://maps.googleapis.com/maps/api/staticmap?center=37.5422,127.0566&zoom=15&size=600x300&markers=color:blue%7C37.5422,127.0566&key=YOUR_API_KEY'
+    map: '/cafecl.png'
   },
   {
     profile: '/profile.png',
@@ -306,11 +315,13 @@ function Feed({ feed, comments, onComment }) {
         <SlideDot active={slideIdx === 1} />
       </SlideDotWrap>
       <FeedText>{feed.text}</FeedText>
-      <FeedMeta>{feed.meta}</FeedMeta>
-      <PlaceCard>
-        <b>{feed.place}</b><br />
-        {feed.placeDesc}
-      </PlaceCard>
+      <FeedMeta>
+        {feed.meta}
+        <SaveMemoryButton onClick={() => alert('내 기억에 저장되었습니다!')}>내 기억으로 저장</SaveMemoryButton>
+      </FeedMeta>
+      <div style={{width:'100%',height:'1px',background:'#e3eafc',margin:'18px 0 8px 0',padding:'0 18px'}} />
+      <div style={{fontWeight:700, fontSize:'13px', color:blue, marginBottom:2, padding:'0 18px'}}>{feed.place}</div>
+      <div style={{fontSize:'12px', color:blue, opacity:0.8, padding:'0 18px'}}>{feed.placeDesc}</div>
       <CommentSection>
         <CommentList>
           {comments.map((c, i) => (

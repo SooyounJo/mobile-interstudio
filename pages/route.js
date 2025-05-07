@@ -10,11 +10,11 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const CheckImg = styled.img`
-  width: 80px;
-  height: 80px;
-  margin-bottom: 32px;
-`;
+// const CheckImg = styled.img`
+//   width: 80px;
+//   height: 80px;
+//   margin-bottom: 32px;
+// `;
 
 const SnsButton = styled.a`
   background: #2563eb;
@@ -34,7 +34,7 @@ const SnsButton = styled.a`
 export default function RoutePage() {
   return (
     <Container>
-      <CheckImg src="/check.png" alt="완료 체크" />
+      {/* <CheckImg src="/check.png" alt="완료 체크" /> */}
       <h2 style={{ color: '#2563eb', fontWeight: 800, fontSize: 28, marginBottom: 24 }}>저장 완료!</h2>
       <Link href="/sns" passHref legacyBehavior>
         <SnsButton>Sion의 SNS 보러가기</SnsButton>
