@@ -63,7 +63,26 @@ const ButtonRow = styled.div`
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin: 32px auto 0 auto;
+  margin: 32px auto 80px auto;
+  z-index: 10;
+`;
+
+const ActionButton = styled.button`
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 12px 0 #2563eb44;
+  display: block;
+  text-decoration: none;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export default function MapPage() {
@@ -76,6 +95,7 @@ export default function MapPage() {
   const [gpsAllowed, setGpsAllowed] = useState(false);
   const [gpsError, setGpsError] = useState(null);
   const [gpsPosition, setGpsPosition] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   // GPS 권한 요청 및 위치 정보 가져오기
   useEffect(() => {
@@ -205,16 +225,18 @@ export default function MapPage() {
       {gpsError && <div style={{ color: '#e53935', textAlign: 'center', marginTop: 12 }}>{gpsError}</div>}
       <ButtonRow>
         <Link href="/" passHref legacyBehavior>
-          <button style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 16, padding: '12px 32px', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 12px 0 #2563eb44', display: 'block', textDecoration: 'none' }}>
-            홈으로 돌아가기
-          </button>
+          <ActionButton as="a">홈으로 돌아가기</ActionButton>
         </Link>
-        <button
-          style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 16, padding: '12px 32px', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 12px 0 #2563eb44', display: 'block' }}
-          onClick={() => router.push('/route')}
+        <ActionButton
+          onClick={() => {
+            if (saving) return;
+            setSaving(true);
+            router.push('/route');
+          }}
+          disabled={saving}
         >
           저장하기
-        </button>
+        </ActionButton>
       </ButtonRow>
     </div>
   );

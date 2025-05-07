@@ -3,12 +3,11 @@ import Head from 'next/head';
 import { createGlobalStyle } from 'styled-components';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Link from 'next/link';
 
-// glTF 로더를 위한 필수 코드
 useGLTF.preload('/ts.glb');
 
 const Container = styled.div`
@@ -128,6 +127,37 @@ const SaveMomentButton = styled.button`
   }
 `;
 
+function IntroOverlay() {
+  useEffect(() => {
+    const intro = document.getElementById('intro');
+    setTimeout(() => {
+      intro.style.opacity = '0';
+      intro.style.pointerEvents = 'none';
+    }, 3000);
+  }, []);
+
+  return (
+    <div id="intro" style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: '#2563eb',
+      color: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '32px',
+      fontWeight: '700',
+      zIndex: 9999,
+      transition: 'opacity 1s ease'
+    }}>
+      closie
+    </div>
+  );
+}
+
 function Model() {
   const gltf = useGLTF('/ts.glb');
   return <primitive object={gltf.scene} scale={5} />;
@@ -136,39 +166,27 @@ function Model() {
 export default function Home() {
   return (
     <>
+      <IntroOverlay />
       <Head>
         <title>closieproject</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="description" content="모바일 최적화된 웹사이트" />
         <link rel="stylesheet" as="style" crossOrigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
         <link href="https://cdn.jsdelivr.net/gh/webfontworld/kopus@1.0/kopub.css" rel="stylesheet" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet" />
       </Head>
-      
       <Container>
         <Header>
           <h1>Closie</h1>
         </Header>
-        
+
         <Main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
           <div style={{ width: '100%', maxWidth: 400, height: 320, display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 32px auto', position: 'relative' }}>
             <WalkingBox>걷는 중</WalkingBox>
             <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'linear-gradient(180deg, #b3e5fc 0%, #fff 100%)', borderRadius: '16px' }}>
               <ambientLight intensity={0.5} color="#b3e5fc" />
-              <directionalLight
-                position={[0, 0, 10]}
-                intensity={1.7}
-                color="#90caf9"
-                castShadow
-              />
-              <directionalLight
-                position={[0, 10, 0]}
-                intensity={0.5}
-                color="#e3f2fd"
-              />
+              <directionalLight position={[0, 0, 10]} intensity={1.7} color="#90caf9" castShadow />
+              <directionalLight position={[0, 10, 0]} intensity={0.5} color="#e3f2fd" />
               <Suspense fallback={null}>
                 <Model />
               </Suspense>
@@ -181,11 +199,12 @@ export default function Home() {
             <SaveMomentButton as="a">지금 이 순간 저장</SaveMomentButton>
           </Link>
         </Main>
-        
+
         <Footer>
           <p>© 지금도 걸어다니는 중</p>
         </Footer>
       </Container>
     </>
   );
-} 
+}
+ 

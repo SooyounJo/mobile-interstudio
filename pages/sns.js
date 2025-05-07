@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 
 const blue = '#2563eb';
+const COMMON_WIDTH = '420px';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -66,49 +67,58 @@ const FollowBtn = styled.button`
 `;
 
 const FeedCard = styled.div`
-  width: 100vw;
-  max-width: 480px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
   background: #fff;
   border-bottom: 1px solid #eee;
   padding-bottom: 18px;
-  margin-bottom: 12px;
+  margin: 0 auto 12px auto;
 `;
 
 const FeedImg = styled.img`
-  width: 100vw;
-  max-width: 480px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
   height: 260px;
   object-fit: cover;
   border-radius: 18px;
   margin-top: 0;
   transition: box-shadow 0.2s;
   box-shadow: 0 2px 8px #2563eb22;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const MapImg = styled.img`
-  width: 100vw;
-  max-width: 480px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
   height: 260px;
   object-fit: cover;
   border-radius: 18px;
   margin-top: 0;
   border: 2px solid #2563eb44;
   background: #eaf1ff;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const SlideWrap = styled.div`
-  width: 100vw;
-  max-width: 480px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
   height: 260px;
   overflow: hidden;
   position: relative;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const SlideInner = styled.div`
   display: flex;
-  width: 200vw;
+  width: 200%;
+  max-width: calc(2 * ${COMMON_WIDTH});
   height: 100%;
-  transform: translateX(${props => props.idx === 0 ? '0' : '-100vw'});
+  transform: translateX(${props => props.idx === 0 ? '0' : `-${COMMON_WIDTH}`});
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
 `;
 
@@ -127,7 +137,7 @@ const SlideDot = styled.div`
 `;
 
 const FeedText = styled.div`
-  padding: 12px 16px 0 16px;
+  padding: 12px 0 0 0;
   font-size: 16px;
   color: ${blue};
   font-weight: 500;
@@ -138,7 +148,7 @@ const FeedMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 8px 16px 0 16px;
+  padding: 8px 0 0 0;
   color: ${blue};
   font-size: 14px;
   text-align: left;
@@ -153,12 +163,12 @@ const FeedTitle = styled.div`
 `;
 
 const PlaceCard = styled.div`
-  width: 100vw;
-  max-width: 480px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
   background: #eaf1ff;
   border: 2px solid #2563eb;
   border-radius: 18px;
-  padding: 16px 14px 16px 14px;
+  padding: 16px 18px 16px 18px;
   color: ${blue};
   font-size: 13px;
   font-weight: 600;
@@ -166,13 +176,15 @@ const PlaceCard = styled.div`
   margin: 18px auto 18px auto;
   text-align: left;
   letter-spacing: 0.01em;
+  box-sizing: border-box;
 `;
 
 const CommentSection = styled.div`
-  width: 100vw;
-  max-width: 480px;
-  padding: 0 14px 12px 14px;
+  width: 100%;
+  max-width: ${COMMON_WIDTH};
+  padding: 0 18px 12px 18px;
   box-sizing: border-box;
+  margin: 0 auto;
 `;
 
 const CommentList = styled.div`
