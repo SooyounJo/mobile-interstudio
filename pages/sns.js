@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const blue = '#2563eb';
-const COMMON_WIDTH = '420px';
+const COMMON_WIDTH = '360px';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -84,7 +85,7 @@ const FeedCard = styled.div`
 const FeedImg = styled.img`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  height: 240px;
+  aspect-ratio: 1/1;
   object-fit: cover;
   border-radius: 0;
   margin: 0 auto 12px auto;
@@ -98,7 +99,7 @@ const FeedImg = styled.img`
 const MapImg = styled.img`
   width: 100%;
   max-width: ${COMMON_WIDTH};
-  height: 240px;
+  aspect-ratio: 1/1;
   object-fit: cover;
   border-radius: 0;
   margin: 0 auto 12px auto;
@@ -108,6 +109,7 @@ const MapImg = styled.img`
   box-sizing: border-box;
   padding-left: 0;
   padding-right: 0;
+  cursor: pointer;
 `;
 
 const SlideWrap = styled.div`
@@ -147,7 +149,7 @@ const SlideDot = styled.div`
 
 const FeedTitle = styled.div`
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   margin: 0 0 8px 0;
   color: ${blue};
   text-align: left;
@@ -165,15 +167,16 @@ const FeedMeta = styled.div`
   gap: 10px;
   padding: 6px 10px 0 10px;
   color: #7a8bb7;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   margin-bottom: 8px;
   box-sizing: border-box;
+  font-weight: 500;
 `;
 
 const FeedText = styled.div`
   padding: 0 10px 0 10px;
-  font-size: 15px;
+  font-size: 14px;
   color: ${blue};
   font-weight: 500;
   text-align: left;
@@ -219,26 +222,33 @@ const Comment = styled.div`
 const CommentForm = styled.form`
   display: flex;
   gap: 8px;
+  margin-top: 6px;
 `;
 
 const CommentInput = styled.input`
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  color: ${blue};
+  border: 1.5px solid #cfd8dc;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #7a8bb7;
+  background: #fafdff;
+  &::placeholder {
+    color: #7a8bb7;
+    opacity: 1;
+  }
 `;
 
 const CommentButton = styled.button`
   background: ${blue};
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 16px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 2px 8px 0 #2563eb22;
 `;
 
 const BottomNav = styled.div`
@@ -294,6 +304,7 @@ const feedData = [
 function Feed({ feed, comments, onComment }) {
   const [slideIdx, setSlideIdx] = useState(0);
   let touchStartX = null;
+  const router = useRouter();
 
   // 모바일 터치 슬라이드 구현
   const handleTouchStart = e => {
@@ -316,7 +327,7 @@ function Feed({ feed, comments, onComment }) {
       >
         <SlideInner idx={slideIdx}>
           <FeedImg src={feed.image} alt={feed.title} />
-          <MapImg src={feed.map} alt={feed.place + ' 지도'} />
+          <MapImg src={feed.map} alt={feed.place + ' 지도'} onClick={() => router.push('/fullmap')} />
         </SlideInner>
       </SlideWrap>
       <SlideDotWrap>
@@ -329,8 +340,8 @@ function Feed({ feed, comments, onComment }) {
         <SaveMemoryButton onClick={() => alert('내 기억에 저장되었습니다!')}>내 기억으로 저장</SaveMemoryButton>
       </FeedMeta>
       <div style={{width:'100%',height:'1px',background:'#e3eafc',margin:'18px 0 8px 0',padding:'0 10px',boxSizing:'border-box'}} />
-      <div style={{fontWeight:700, fontSize:'13px', color:blue, marginBottom:2, padding:'0 10px',boxSizing:'border-box'}}>{feed.place}</div>
-      <div style={{fontSize:'12px', color:blue, opacity:0.8, padding:'0 10px',boxSizing:'border-box'}}>{feed.placeDesc}</div>
+      <div style={{fontWeight:500, fontSize:'14px', color:blue, marginBottom:2, padding:'0 10px',boxSizing:'border-box'}}>{feed.place}</div>
+      <div style={{fontSize:'14px', color:blue, opacity:0.8, padding:'0 10px',boxSizing:'border-box', fontWeight:500}}>{feed.placeDesc}</div>
       <CommentSection>
         <CommentList>
           {comments.map((c, i) => (
@@ -356,6 +367,7 @@ function Feed({ feed, comments, onComment }) {
 
 export default function SnsPage() {
   const [comments, setComments] = useState([[], []]);
+  const router = useRouter();
 
   const handleComment = (feedIdx, comment) => {
     setComments(prev => {
