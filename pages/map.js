@@ -41,13 +41,15 @@ const MapPhotoRow = styled.div`
 `;
 
 const MapBox = styled.div`
-  flex: 1 1 0;
+  width: 100vw;
+  max-width: 100vw;
   min-width: 0;
   min-height: 0;
-  height: 320px;
+  height: 480px;
   border-radius: 16px;
   box-shadow: 0 2px 12px 0 #2563eb22;
   overflow: hidden;
+  margin: 0 auto;
 `;
 
 const PhotoPreview = styled.img`

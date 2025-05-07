@@ -76,6 +76,9 @@ const FeedCard = styled.div`
   padding: 22px 0 18px 0;
   margin: 0 auto 22px auto;
   position: relative;
+  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 const FeedImg = styled.img`
@@ -83,13 +86,13 @@ const FeedImg = styled.img`
   max-width: ${COMMON_WIDTH};
   height: 240px;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 0;
   margin: 0 auto 12px auto;
   display: block;
   box-shadow: 0 2px 12px #2563eb22;
-  padding-left: 18px;
-  padding-right: 18px;
   box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
 `;
 
 const MapImg = styled.img`
@@ -97,14 +100,14 @@ const MapImg = styled.img`
   max-width: ${COMMON_WIDTH};
   height: 240px;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 0;
   margin: 0 auto 12px auto;
   display: block;
   border: 2px solid #2563eb44;
   background: #eaf1ff;
-  padding-left: 18px;
-  padding-right: 18px;
   box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
 `;
 
 const SlideWrap = styled.div`
@@ -114,6 +117,9 @@ const SlideWrap = styled.div`
   overflow: hidden;
   position: relative;
   margin: 0 auto 8px auto;
+  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 const SlideInner = styled.div`
@@ -148,28 +154,31 @@ const FeedTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-left: 18px;
-  padding-right: 18px;
+  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 const FeedMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 18px 0 18px;
+  padding: 6px 10px 0 10px;
   color: #7a8bb7;
   font-size: 13px;
   text-align: left;
   margin-bottom: 8px;
+  box-sizing: border-box;
 `;
 
 const FeedText = styled.div`
-  padding: 0 18px 0 18px;
+  padding: 0 10px 0 10px;
   font-size: 15px;
   color: ${blue};
   font-weight: 500;
   text-align: left;
   margin-bottom: 8px;
+  box-sizing: border-box;
 `;
 
 const SaveMemoryButton = styled.button`
@@ -319,9 +328,9 @@ function Feed({ feed, comments, onComment }) {
         {feed.meta}
         <SaveMemoryButton onClick={() => alert('내 기억에 저장되었습니다!')}>내 기억으로 저장</SaveMemoryButton>
       </FeedMeta>
-      <div style={{width:'100%',height:'1px',background:'#e3eafc',margin:'18px 0 8px 0',padding:'0 18px'}} />
-      <div style={{fontWeight:700, fontSize:'13px', color:blue, marginBottom:2, padding:'0 18px'}}>{feed.place}</div>
-      <div style={{fontSize:'12px', color:blue, opacity:0.8, padding:'0 18px'}}>{feed.placeDesc}</div>
+      <div style={{width:'100%',height:'1px',background:'#e3eafc',margin:'18px 0 8px 0',padding:'0 10px',boxSizing:'border-box'}} />
+      <div style={{fontWeight:700, fontSize:'13px', color:blue, marginBottom:2, padding:'0 10px',boxSizing:'border-box'}}>{feed.place}</div>
+      <div style={{fontSize:'12px', color:blue, opacity:0.8, padding:'0 10px',boxSizing:'border-box'}}>{feed.placeDesc}</div>
       <CommentSection>
         <CommentList>
           {comments.map((c, i) => (
