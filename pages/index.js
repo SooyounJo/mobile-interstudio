@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { createGlobalStyle } from 'styled-components';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import Link from 'next/link';
@@ -127,13 +127,36 @@ const SaveMomentButton = styled.button`
   }
 `;
 
+const ButtonRow = styled.div`
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  max-width: 480px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 0 24px 0;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: 0 -2px 12px 0 #2563eb22;
+  margin: 0 auto;
+`;
+
 function IntroOverlay() {
+  const textRef = useRef();
+
   useEffect(() => {
     const intro = document.getElementById('intro');
+    const text = textRef.current;
     setTimeout(() => {
       intro.style.opacity = '0';
       intro.style.pointerEvents = 'none';
     }, 3000);
+
+    setTimeout(() => {
+      text.style.transform = 'scale(1.3)';
+    }, 2000);
   }, []);
 
   return (
@@ -148,12 +171,15 @@ function IntroOverlay() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 700,
       fontSize: '32px',
-      fontWeight: '700',
       zIndex: 9999,
       transition: 'opacity 1s ease'
     }}>
-      closie
+      <div ref={textRef} style={{ transition: 'transform 1s ease' }}>
+        closie
+      </div>
     </div>
   );
 }
@@ -207,4 +233,3 @@ export default function Home() {
     </>
   );
 }
- 
