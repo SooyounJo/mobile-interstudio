@@ -186,7 +186,30 @@ function IntroOverlay() {
 
 function Model() {
   const gltf = useGLTF('/ts.glb');
-  return <primitive object={gltf.scene} scale={5} />;
+  const modelRef = useRef();
+  
+  useEffect(() => {
+    if (!modelRef.current) return;
+    
+    const animate = () => {
+      if (modelRef.current) {
+        // 위아래로 부드럽게 움직이는 애니메이션 (속도 증가)
+        modelRef.current.position.y = Math.sin(Date.now() * 0.002) * 0.15;
+        
+        // 팔 움직임 애니메이션
+        const arms = modelRef.current.children.find(child => child.name === 'arms');
+        if (arms) {
+          // 팔을 앞뒤로 움직이는 애니메이션
+          arms.rotation.x = Math.sin(Date.now() * 0.003) * 0.3;
+        }
+      }
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+  }, []);
+
+  return <primitive ref={modelRef} object={gltf.scene} scale={5} />;
 }
 
 export default function Home() {
