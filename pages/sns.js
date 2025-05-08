@@ -65,6 +65,23 @@ const FollowBtn = styled.button`
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  margin-right: 8px;
+`;
+
+const FindFriendBtn = styled.button`
+  background: ${blue};
+  color: #fff;
+  border: 1.5px solid ${blue};
+  border-radius: 8px;
+  padding: 6px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const FeedCard = styled.div`
@@ -366,15 +383,15 @@ function Feed({ feed, comments, onComment }) {
 }
 
 export default function SnsPage() {
-  const [comments, setComments] = useState([[], []]);
   const router = useRouter();
+  const [comments, setComments] = useState({});
+  const [slideIdx, setSlideIdx] = useState(0);
 
   const handleComment = (feedIdx, comment) => {
-    setComments(prev => {
-      const newComments = [...prev];
-      newComments[feedIdx] = [...newComments[feedIdx], comment];
-      return newComments;
-    });
+    setComments(prev => ({
+      ...prev,
+      [feedIdx]: [...(prev[feedIdx] || []), comment]
+    }));
   };
 
   return (
@@ -383,17 +400,20 @@ export default function SnsPage() {
         <ProfileInfo>
           <ProfileImg />
           <ProfileText>
-            <Nick>closie</Nick>
-            <Sub>closie의 피드</Sub>
+            <Nick>김인터</Nick>
+            <Sub>@interstudio</Sub>
           </ProfileText>
         </ProfileInfo>
-        <FollowBtn>팔로우</FollowBtn>
+        <ButtonContainer>
+          <FollowBtn>팔로우</FollowBtn>
+          <FindFriendBtn onClick={() => router.push('/friends')}>친구찾기</FindFriendBtn>
+        </ButtonContainer>
       </ProfileHeader>
       {feedData.map((feed, idx) => (
         <Feed
           key={idx}
           feed={feed}
-          comments={comments[idx]}
+          comments={comments[idx] || []}
           onComment={comment => handleComment(idx, comment)}
         />
       ))}
