@@ -195,7 +195,16 @@ export default function MapPage() {
           onClick={() => {
             if (saving) return;
             setSaving(true);
-            router.push('/route');
+            // 오늘 날짜 구하기
+            const today = new Date();
+            const dateStr = today.getFullYear() + '.' + String(today.getMonth()+1).padStart(2,'0') + '.' + String(today.getDate()).padStart(2,'0');
+            // 사진 url (없으면 기본)
+            const photo = photoUrl || '/profile.png';
+            // 임시 문구
+            const text = 'AI가 곧 작성할 문구입니다.';
+            // localStorage에 저장
+            localStorage.setItem('newFeed', JSON.stringify({ date: dateStr, photo, text }));
+            router.push('/');
           }}
           disabled={saving}
         >
