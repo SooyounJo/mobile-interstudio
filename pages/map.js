@@ -161,45 +161,7 @@ export default function MapPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f5f8ff' }}>
       <div style={{ width: '100%', maxWidth: 480, margin: '40px auto 0 auto' }}>
         <IconRow>
-          {/* 마이크(오디오) */}
-          <IconButton
-            className={selected === 'audio' ? 'active' : ''}
-            onClick={() => {
-              setSelected('audio');
-              audioInputRef.current && audioInputRef.current.click();
-            }}
-            title="마이크"
-          >
-            <img src="/ma.png" alt="마이크" style={{ width: 48, height: 48 }} />
-            <input
-              ref={audioInputRef}
-              type="file"
-              accept="audio/*"
-              capture="microphone"
-              style={{ display: 'none' }}
-              onChange={handleAudioChange}
-            />
-          </IconButton>
-          {/* 영상(비디오) */}
-          <IconButton
-            className={selected === 'video' ? 'active' : ''}
-            onClick={() => {
-              setSelected('video');
-              videoInputRef.current && videoInputRef.current.click();
-            }}
-            title="영상"
-          >
-            <img src="/vi.png" alt="영상" style={{ width: 48, height: 48 }} />
-            <input
-              ref={videoInputRef}
-              type="file"
-              accept="video/*"
-              capture="environment"
-              style={{ display: 'none' }}
-              onChange={handleFileChange}
-            />
-          </IconButton>
-          {/* 카메라(사진) */}
+          {/* 카메라(사진)만 남김 */}
           <IconButton
             className={selected === 'photo' ? 'active' : ''}
             onClick={() => {
