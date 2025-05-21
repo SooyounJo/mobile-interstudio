@@ -416,7 +416,7 @@ export default function SnsPage() {
           comments={comments[idx] || []}
           onComment={comment => handleComment(idx, comment)}
         />
-      ))}
+          ))}
       <BottomNav>
         <NavIcon />
         <NavIcon />
