@@ -343,19 +343,14 @@ const ButtonRow = styled.div`
 `;
 
 function IntroOverlay() {
-  const textRef = useRef();
+  const imgRef = useRef();
 
   useEffect(() => {
     const intro = document.getElementById('intro');
-    const text = textRef.current;
     setTimeout(() => {
       intro.style.opacity = '0';
       intro.style.pointerEvents = 'none';
     }, 3000);
-
-    setTimeout(() => {
-      text.style.transform = 'scale(1.3)';
-    }, 2000);
   }, []);
 
   return (
@@ -366,19 +361,31 @@ function IntroOverlay() {
       width: '100vw',
       height: '100vh',
       backgroundColor: '#2563eb',
-      color: 'white',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'Montserrat, sans-serif',
-      fontWeight: 700,
-      fontSize: '32px',
       zIndex: 9999,
-      transition: 'opacity 1s ease'
+      transition: 'opacity 1s ease',
+      overflow: 'hidden'
     }}>
-      <div ref={textRef} style={{ transition: 'transform 1s ease' }}>
-        closie
-      </div>
+      <img
+        ref={imgRef}
+        src="/app/appmain.png"
+        alt="앱 메인"
+        style={{
+          width: '100%',
+          height: '100vh',
+          maxWidth: 480,
+          maxHeight: '100vh',
+          objectFit: 'cover',
+          objectPosition: 'center',
+          display: 'block',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          background: '#2563eb',
+          borderRadius: 0
+        }}
+      />
     </div>
   );
 }
@@ -898,53 +905,6 @@ export default function HomePage() {
         <Header>
           <h1>Closie</h1>
         </Header>
-        <Section>
-          <div style={{ width: '100%', maxWidth: 400, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', marginTop: 0, paddingTop: 0 }}>
-            <div style={{
-              color: '#2563eb',
-              fontWeight: 900,
-              fontSize: 32,
-              letterSpacing: '0.05em',
-              textAlign: 'center',
-              marginBottom: 3,
-              fontFamily: 'Montserrat, Pretendard, sans-serif',
-              zIndex: 20,
-              width: '100%'
-            }}>MINHI</div>
-            <div style={{ width: '100%', height: 320, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 0, paddingTop: 0 }}>
-            <WalkingBox>걷는 중</WalkingBox>
-            <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'linear-gradient(180deg, #b3e5fc 0%, #fff 100%)', borderRadius: '16px' }}>
-              <ambientLight intensity={0.5} color="#b3e5fc" />
-                <directionalLight position={[0, 0, 10]} intensity={1.7} color="#90caf9" castShadow />
-                <directionalLight position={[0, 10, 0]} intensity={0.5} color="#e3f2fd" />
-              <Suspense fallback={null}>
-                <Model />
-              </Suspense>
-            </Canvas>
-            </div>
-            <div style={{
-              marginTop: 18,
-              color: '#2563eb',
-              fontWeight: 700,
-              fontSize: 16,
-              textAlign: 'center',
-              letterSpacing: '0.01em',
-              fontFamily: 'Montserrat, Pretendard, sans-serif'
-            }}>2013-present</div>
-            <div style={{
-              color: '#2563eb',
-              fontWeight: 600,
-              fontSize: 14,
-              textAlign: 'center',
-              opacity: 0.85,
-              marginTop: 2,
-              fontFamily: 'Pretendard, Montserrat, sans-serif'
-            }}>서울특별시 성북구 출생</div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 47 }}>
-              <EmoticonScroll />
-            </div>
-          </div>
-        </Section>
         <Section style={{paddingTop: 0, alignItems: 'center', justifyContent: 'flex-start'}}>
           {feedData.map((feed, idx) => (
             <Feed
