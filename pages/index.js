@@ -94,8 +94,9 @@ export default function AppMainImage() {
             top: 200 + floatY,
             left: '50%',
             transform: 'translateX(-50%)',
-            width: 320,
-            height: 320,
+            width: '66vw',
+            maxWidth: 320,
+            height: 'auto',
             objectFit: 'contain',
             zIndex: 20,
             pointerEvents: 'none',
@@ -114,8 +115,9 @@ export default function AppMainImage() {
               position: 'absolute',
               top: 490,
               left: '50%',
-              width: 480,
-              height: 480,
+              width: '100vw',
+              maxWidth: 480,
+              height: 'auto',
               objectFit: 'contain',
               transform: `translate(-50%, 0) scaleX(${sewAppear ? 1 : 0})`,
               transformOrigin: 'right center',
@@ -137,8 +139,9 @@ export default function AppMainImage() {
               position: 'absolute',
               top: 0,
               left: 0,
-              width: '100%',
-              height: '100%',
+              width: '100vw',
+              maxWidth: 480,
+              height: 'auto',
               objectFit: 'contain',
               objectPosition: 'top center',
               background: 'transparent',
@@ -154,8 +157,10 @@ export default function AppMainImage() {
           src="/app/main4.png"
           alt="앱 메인2"
           style={{
-            width: '100%',
+            width: '100vw',
+            maxWidth: 480,
             minHeight: '100vh',
+            height: 'auto',
             objectFit: 'contain',
             objectPosition: 'top center',
             display: 'block',
@@ -202,11 +207,9 @@ export default function AppMainImage() {
                 background: 'none',
                 border: 'none',
                 padding: 0,
-                margin: '0 20px',
-                cursor: 'pointer',
-                outline: 'none',
-                width: 80,
-                height: 80,
+                margin: '0 27px',
+                width: 72,
+                height: 72,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -223,12 +226,12 @@ export default function AppMainImage() {
               <img
                 src={`/bar/${num}.png`}
                 alt={`버튼${num}`}
-                style={{ width: 80, height: 80, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
+                style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
               />
             </button>
           ))}
         </div>
       </div>
-    </div>
+          </div>
   );
 }

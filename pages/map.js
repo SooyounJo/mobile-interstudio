@@ -50,6 +50,9 @@ const MapBox = styled.div`
   box-shadow: 0 2px 12px 0 #2563eb22;
   overflow: hidden;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const PhotoPreview = styled.img`
@@ -183,8 +186,33 @@ export default function MapPage() {
           </IconButton>
         </IconRow>
       </div>
-      <MapPhotoRow>
-        <MapBox id="map" />
+      <MapPhotoRow style={{ position: 'relative' }}>
+        <MapBox>
+          {/* <div id="map" /> 기존 카카오맵 제거 */}
+          <img src="/map/map.png" alt="map" style={{ width: '720px', height: '720px', maxWidth: 'none', maxHeight: 'none', objectFit: 'contain', display: 'block' }} />
+          {/* 말풍선: 석관동 한국예술종합학교 */}
+          <div style={{ position: 'absolute', right: '3%', top: '16%', zIndex: 10, pointerEvents: 'none' }}>
+            <div style={{
+              position: 'relative',
+              background: '#fff',
+              borderRadius: 16,
+              boxShadow: '0 4px 16px #2563eb22',
+              padding: '14px 22px',
+              fontSize: 17,
+              fontWeight: 600,
+              color: '#222',
+              minWidth: 120,
+              textAlign: 'center',
+              display: 'inline-block',
+            }}>
+              석관동 한국예술종합학교
+              {/* 꼬리 */}
+              <div style={{ position: 'absolute', left: 38, bottom: -16, width: 18, height: 18, background: 'transparent' }}>
+                <svg width="18" height="18"><polygon points="0,0 18,0 9,18" fill="#fff" /></svg>
+              </div>
+            </div>
+          </div>
+        </MapBox>
         {photoUrl && <PhotoPreview src={photoUrl} alt="사진 미리보기" />}
       </MapPhotoRow>
       {gpsError && <div style={{ color: '#e53935', textAlign: 'center', marginTop: 12 }}>{gpsError}</div>}
@@ -252,11 +280,9 @@ export default function MapPage() {
               background: 'none',
               border: 'none',
               padding: 0,
-              margin: '0 20px',
-              cursor: 'pointer',
-              outline: 'none',
-              width: 80,
-              height: 80,
+              margin: '0 27px',
+              width: 72,
+              height: 72,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -273,7 +299,7 @@ export default function MapPage() {
             <img
               src={`/bar/${num}.png`}
               alt={`버튼${num}`}
-              style={{ width: 80, height: 80, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
+              style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
             />
           </button>
         ))}
