@@ -266,7 +266,7 @@ export default function MapPage() {
             onClick={() => {
               setActiveBar(num);
               if(num === 1) router.push('/');
-              if(num === 2) router.push('/map');
+              if(num === 2) router.push('/sns');
               if(num === 3) router.push('/fullmap');
             }}
           >

@@ -41,7 +41,12 @@ export default function AppMainImage() {
     // 8초 뒤 sew.png 애니메이션 시작
     const timer3 = setTimeout(() => {
       setShowSew(true);
-      setTimeout(() => setSewAppear(true), 10);
+      setTimeout(() => {
+        setSewAppear(true);
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem('closie_sew_shown', '1');
+        }
+      }, 10);
     }, 8000);
     // clo.png 페이드인
     const timer4 = setTimeout(() => {
@@ -211,7 +216,7 @@ export default function AppMainImage() {
               onClick={() => {
                 setActiveBar(num);
                 if(num === 1) router.push('/');
-                if(num === 2) router.push('/map');
+                if(num === 2) router.push('/sns');
                 if(num === 3) router.push('/fullmap');
               }}
             >
