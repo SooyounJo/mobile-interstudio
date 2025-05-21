@@ -162,7 +162,31 @@ export default function MapPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f5f8ff' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f5f8ff', position: 'relative' }}>
+      {/* 좌측 상단 뒤로가기 버튼 */}
+      <button
+        onClick={() => router.push('/sns')}
+        style={{
+          position: 'absolute',
+          left: 12,
+          top: 12,
+          width: 24,
+          height: 24,
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+        aria-label="뒤로가기"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15L6 9L12 3" stroke="#222" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       <div style={{ width: '100%', maxWidth: 480, margin: '40px auto 0 auto' }}>
         <IconRow>
           {/* 카메라(사진)만 남김 */}
@@ -191,7 +215,7 @@ export default function MapPage() {
           {/* <div id="map" /> 기존 카카오맵 제거 */}
           <img src="/map/map.png" alt="map" style={{ width: '720px', height: '720px', maxWidth: 'none', maxHeight: 'none', objectFit: 'contain', display: 'block' }} />
           {/* 말풍선: 석관동 한국예술종합학교 */}
-          <div style={{ position: 'absolute', right: '3%', top: '16%', zIndex: 10, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', right: '3%', top: '16%', zIndex: 10, pointerEvents: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{
               position: 'relative',
               background: '#fff',
@@ -211,15 +235,28 @@ export default function MapPage() {
                 <svg width="18" height="18"><polygon points="0,0 18,0 9,18" fill="#fff" /></svg>
               </div>
             </div>
+            {/* 사진 미리보기 (말풍선 아래) */}
+            {photoUrl && (
+              <img
+                src={photoUrl}
+                alt="사진 미리보기"
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 12,
+                  objectFit: 'cover',
+                  boxShadow: '0 2px 8px 0 #2563eb22',
+                  marginTop: 10,
+                  background: '#eee',
+                  pointerEvents: 'auto',
+                }}
+              />
+            )}
           </div>
         </MapBox>
-        {photoUrl && <PhotoPreview src={photoUrl} alt="사진 미리보기" />}
       </MapPhotoRow>
       {gpsError && <div style={{ color: '#e53935', textAlign: 'center', marginTop: 12 }}>{gpsError}</div>}
       <ButtonRow>
-        <Link href="/" passHref legacyBehavior>
-          <ActionButton as="a">홈으로 돌아가기</ActionButton>
-        </Link>
         <ActionButton
           onClick={() => {
             if (saving) return;
@@ -233,7 +270,7 @@ export default function MapPage() {
             const text = 'AI가 곧 작성할 문구입니다.';
             // localStorage에 저장
             localStorage.setItem('newFeed', JSON.stringify({ date: dateStr, photo, text }));
-            router.push('/');
+            router.push('/sns#new');
           }}
           disabled={saving}
         >

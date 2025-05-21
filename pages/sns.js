@@ -5,6 +5,7 @@ export default function SNSPage() {
   const [activeBar, setActiveBar] = useState(2); // sns가 2번 버튼
   const [showModal, setShowModal] = useState(true);
   const [showAddBtn, setShowAddBtn] = useState(false);
+  const [newFeed, setNewFeed] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +21,27 @@ export default function SNSPage() {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 저장된 newFeed 불러오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const feed = localStorage.getItem('newFeed');
+      if (feed) {
+        setNewFeed(JSON.parse(feed));
+        localStorage.removeItem('newFeed');
+      }
+    }
+  }, []);
+
+  // #new로 이동 시 하단 스크롤
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#new') {
+      setTimeout(() => {
+        const el = document.getElementById('new-feed-anchor');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 200);
+    }
   }, []);
 
   return (
@@ -62,7 +84,42 @@ export default function SNSPage() {
           </div>
         </div>
       )}
-      <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', paddingTop: 0, paddingBottom: 120, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      {/* 예시 사각형(저장된 사진)이 sns3.png 위에 겹쳐서 오버레이 */}
+      <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', paddingTop: 0, paddingBottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+        {/* 날짜 텍스트 */}
+        {newFeed && (
+          <div style={{ position: 'absolute', top: '1865px', left: 'calc(50% - 120px)', transform: 'translateX(0, 0)', marginBottom: 10, fontWeight: 700, fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif', fontSize: 18, color: '#000', zIndex: 11, background: 'none', textAlign: 'center' }}>
+            {newFeed.date}
+          </div>
+        )}
+        <div style={{ position: 'absolute', top: '1950px', left: '50%', transform: 'translate(-50%, 0)', width: 240, height: 240, borderRadius: 32, background: '#eaeaea', boxShadow: '0 2px 8px #bbb6', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, overflow: 'hidden', padding: 0 }}>
+          {newFeed && (
+            <img
+              src={newFeed.photo}
+              alt="추가된 추억"
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: 32,
+                objectFit: 'cover',
+                margin: 0,
+                padding: 0
+              }}
+            />
+          )}
+        </div>
+        {/* AI 글 임시 박스 */}
+        {newFeed && (
+          <div style={{ position: 'absolute', top: '2230px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 60, borderRadius: 18, background: '#f3f3f3', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 16, marginTop: 18, zIndex: 10, textAlign: 'center' }}>
+            (AI 글 자리)
+          </div>
+        )}
+        {/* 줄거리 임시 박스 */}
+        {newFeed && (
+          <div style={{ position: 'absolute', top: '2300px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 60, borderRadius: 18, background: '#f3f3f3', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 16, marginTop: 18, zIndex: 10, textAlign: 'center' }}>
+            (줄거리 자리)
+          </div>
+        )}
         <img src="/sns/sns3.png" alt="sns3" style={{ width: '100vw', maxWidth: 480, height: 'auto', objectFit: 'contain', display: 'block' }} />
       </div>
       {/* 하단 minibar.png 배경 + 선택 바 버튼 3개 */}
@@ -131,7 +188,7 @@ export default function SNSPage() {
       </div>
       {/* 추억 추가하기 버튼 (맨 아래에서 300px 위, 스크롤이 끝까지 내려가야만 노출) */}
       {showAddBtn && (
-        <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '32px 0 32px 0', marginBottom: 300 }}>
+        <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px 0 16px 0', marginBottom: 0 }}>
           <button
             style={{
               background: '#2563eb',
