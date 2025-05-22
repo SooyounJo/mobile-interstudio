@@ -3,10 +3,14 @@ import { useRouter } from 'next/router';
 
 export default function SNSPage() {
   const [activeBar, setActiveBar] = useState(2); // sns가 2번 버튼
-  const [showModal, setShowModal] = useState(true);
   const [showAddBtn, setShowAddBtn] = useState(false);
   const [newFeed, setNewFeed] = useState(null);
+  const [displayedText1, setDisplayedText1] = useState('');
+  const [displayedText2, setDisplayedText2] = useState('');
   const router = useRouter();
+
+  const text1 = "석관동 한국예술종합학교";
+  const text2 = `햇살 좋은 한예종 마루 위, 수연이랑 말없이 고양이들을 바라봤어.\n그 조용한 순간이, 오늘 하루 중 가장 따뜻했어.\n\n#한예종고양이 #겨울햇살 #수연과함께`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,51 +48,80 @@ export default function SNSPage() {
     }
   }, []);
 
+  // newFeed가 있을 때 하단으로 자동 스크롤
+  useEffect(() => {
+    if (newFeed && typeof window !== 'undefined') {
+      // 이미지가 로드될 때까지 기다린 후 스크롤
+      const timer = setTimeout(() => {
+        const lastElement = document.querySelector('img[src="/sns/sns3.png"]');
+        if (lastElement) {
+          lastElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'end'
+          });
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [newFeed]);
+
+  useEffect(() => {
+    if (!newFeed) return;
+    setDisplayedText1('');
+    setDisplayedText2('');
+    let i = 0, j = 0;
+    const type1 = () => {
+      if (i < text1.length) {
+        setDisplayedText1(prev => prev + text1[i]);
+        i++;
+        setTimeout(type1, 100);
+      } else {
+        // 1초 버퍼링 후 줄거리 타이핑 시작
+        setTimeout(type2, 1000);
+      }
+    };
+    const type2 = () => {
+      if (j < text2.length) {
+        setDisplayedText2(prev => prev + text2[j]);
+        j++;
+        setTimeout(type2, 40);
+      }
+    };
+    type1();
+  }, [newFeed]);
+
   return (
     <div style={{ minHeight: '100vh', background: '#fff', position: 'relative' }}>
-      {/* 새로운 일기 생성 질문 모달 */}
-      {showModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, width: '100vw', height: '100vh',
-          background: 'rgba(0,0,0,0.18)', zIndex: 1000,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <div style={{
-            background: '#fff',
-            borderRadius: 18,
-            boxShadow: '0 4px 24px 0 #2563eb22',
-            padding: '32px 24px 20px 24px',
-            minWidth: 260,
-            maxWidth: 320,
-            textAlign: 'center',
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-          }}>
-            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 18 }}>새로운 일기 생성</div>
-            <div style={{ fontSize: 15, color: '#444', marginBottom: 24 }}>새로운 일기를 작성하시겠습니까?</div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <button
-                style={{
-                  background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontWeight: 500, fontSize: 15, cursor: 'pointer',
-                  boxShadow: '0 2px 8px #2563eb22',
-                }}
-                onClick={() => router.push('/map')}
-              >수락</button>
-              <button
-                style={{
-                  background: '#eee', color: '#333', border: 'none', borderRadius: 8, padding: '8px 18px', fontWeight: 500, fontSize: 15, cursor: 'pointer',
-                }}
-                onClick={() => setShowModal(false)}
-              >취소</button>
-            </div>
-          </div>
-        </div>
-      )}
       {/* 예시 사각형(저장된 사진)이 sns3.png 위에 겹쳐서 오버레이 */}
       <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', paddingTop: 0, paddingBottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+        {/* 새로운 일기 작성 버튼 */}
+        <button
+          style={{
+            position: 'absolute',
+            top: 670,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 12,
+            padding: '8px 20px',
+            fontSize: 14,
+            fontWeight: 600,
+            boxShadow: '0 4px 16px #2563eb22',
+            cursor: 'pointer',
+            transition: 'background 0.2s',
+            zIndex: 20,
+          }}
+          onClick={() => router.push('/map')}
+        >
+          새로운 일기 작성하기
+        </button>
+
         {/* 날짜 텍스트 */}
         {newFeed && (
-          <div style={{ position: 'absolute', top: '1865px', left: 'calc(50% - 120px)', transform: 'translateX(0, 0)', marginBottom: 10, fontWeight: 700, fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif', fontSize: 18, color: '#000', zIndex: 11, background: 'none', textAlign: 'center' }}>
+          <div style={{ position: 'absolute', top: '1865px', left: 'calc(50% - 170px)', transform: 'translateX(0, 0)', marginBottom: 10, fontWeight: 700, fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif', fontSize: 18, color: '#000', zIndex: 11, background: 'none', textAlign: 'center' }}>
             {newFeed.date}
           </div>
         )}
@@ -108,16 +141,16 @@ export default function SNSPage() {
             />
           )}
         </div>
-        {/* AI 글 임시 박스 */}
+        {/* AI 글 박스 */}
         {newFeed && (
-          <div style={{ position: 'absolute', top: '2230px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 60, borderRadius: 18, background: '#f3f3f3', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 16, marginTop: 18, zIndex: 10, textAlign: 'center' }}>
-            (AI 글 자리)
+          <div style={{ position: 'absolute', top: '2280px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 'auto', borderRadius: 18, background: '#f3f3f3', padding: '12px', color: '#333', fontSize: 14, marginTop: 18, zIndex: 10, textAlign: 'center', minHeight: 60 }}>
+            석관동 한국예술종합학교
           </div>
         )}
-        {/* 줄거리 임시 박스 */}
+        {/* 줄거리 박스 */}
         {newFeed && (
-          <div style={{ position: 'absolute', top: '2300px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 60, borderRadius: 18, background: '#f3f3f3', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 16, marginTop: 18, zIndex: 10, textAlign: 'center' }}>
-            (줄거리 자리)
+          <div style={{ position: 'absolute', top: '2350px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 'auto', borderRadius: 18, background: '#f3f3f3', padding: '12px', color: '#333', fontSize: 14, marginTop: 18, zIndex: 10, textAlign: 'left', lineHeight: 1.5, minHeight: 60, whiteSpace: 'pre-line' }}>
+            {displayedText2}
           </div>
         )}
         <img src="/sns/sns3.png" alt="sns3" style={{ width: '100vw', maxWidth: 480, height: 'auto', objectFit: 'contain', display: 'block' }} />
