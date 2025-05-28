@@ -20,6 +20,11 @@ export default function AppMainImage() {
         setFadeout(true);
         setHide(true);
         setCloOpacity(1);
+        // sew가 이미 보여졌다면 리로드해도 보이도록 설정
+        if (window.sessionStorage.getItem('closie_sew_shown')) {
+          setShowSew(true);
+          setSewAppear(true);
+        }
       } else {
         setIsFirstEntry(true);
         window.sessionStorage.setItem('closie_intro_shown', '1');
@@ -94,8 +99,8 @@ export default function AppMainImage() {
             top: 200 + floatY,
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '66vw',
-            maxWidth: 320,
+            width: '64vw',
+            maxWidth: 310,
             height: 'auto',
             objectFit: 'contain',
             zIndex: 20,
@@ -113,7 +118,7 @@ export default function AppMainImage() {
             alt="sew"
             style={{
               position: 'absolute',
-              top: 490,
+              top: 550,
               left: '50%',
               width: '100vw',
               maxWidth: 480,

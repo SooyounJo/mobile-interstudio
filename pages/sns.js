@@ -7,10 +7,57 @@ export default function SNSPage() {
   const [newFeed, setNewFeed] = useState(null);
   const [displayedText1, setDisplayedText1] = useState('');
   const [displayedText2, setDisplayedText2] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
 
   const text1 = "석관동 한국예술종합학교";
-  const text2 = `햇살 좋은 한예종 마루 위, 수연이랑 말없이 고양이들을 바라봤어.\n그 조용한 순간이, 오늘 하루 중 가장 따뜻했어.\n\n#한예종고양이 #겨울햇살 #수연과함께`;
+  
+
+  // 환경변수에서 API 키를 읽어옴 (반드시 NEXT_PUBLIC_ 접두어)
+  const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+
+  // 브라우저에서 File을 base64로 변환하는 함수
+  function getBase64FromUrl(url) {
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      }));
+  }
+
+  // AI 일기 생성 함수
+  async function generateDiaryFromImage(imageUrl, userName, weather, location, date) {
+    setLoading(true);
+    setError('');
+    try {
+      const base64ImageData = await getBase64FromUrl(imageUrl);
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          base64Image: base64ImageData,
+          userName,
+          weather,
+          location,
+          date,
+        }),
+      });
+
+      if (!response.ok) throw new Error('AI 서버 응답 오류');
+      const data = await response.json();
+      setLoading(false);
+      return data.text;
+    } catch (e) {
+      setLoading(false);
+      setError('AI 일기 생성에 실패했습니다.');
+      return '';
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,29 +113,27 @@ export default function SNSPage() {
     }
   }, [newFeed]);
 
+  // 사진이 추가될 때마다 AI 일기 생성
   useEffect(() => {
-    if (!newFeed) return;
-    setDisplayedText1('');
-    setDisplayedText2('');
-    let i = 0, j = 0;
-    const type1 = () => {
-      if (i < text1.length) {
-        setDisplayedText1(prev => prev + text1[i]);
-        i++;
-        setTimeout(type1, 100);
-      } else {
-        // 1초 버퍼링 후 줄거리 타이핑 시작
-        setTimeout(type2, 1000);
-      }
-    };
-    const type2 = () => {
-      if (j < text2.length) {
-        setDisplayedText2(prev => prev + text2[j]);
-        j++;
-        setTimeout(type2, 40);
-      }
-    };
-    type1();
+    if (newFeed && newFeed.photo) {
+      generateDiaryFromImage(
+        newFeed.photo,
+        '수연', // 사용자 이름
+        '맑음', // 날씨
+        '서울 성북구', // 장소
+        newFeed.date // 날짜
+      ).then(text => {
+        // 타이핑 모션
+        let i = 0;
+        setDisplayedText2('');
+        function type() {
+          setDisplayedText2(prev => prev + (text[i] || ''));
+          i++;
+          if (i < text.length) setTimeout(type, 40);
+        }
+        type();
+      });
+    }
   }, [newFeed]);
 
   return (
@@ -150,7 +195,7 @@ export default function SNSPage() {
         {/* 줄거리 박스 */}
         {newFeed && (
           <div style={{ position: 'absolute', top: '2350px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 'auto', borderRadius: 18, background: '#f3f3f3', padding: '12px', color: '#333', fontSize: 14, marginTop: 18, zIndex: 10, textAlign: 'left', lineHeight: 1.5, minHeight: 60, whiteSpace: 'pre-line' }}>
-            {displayedText2}
+            {loading ? 'AI가 일기를 쓰는 중...' : error || displayedText2}
           </div>
         )}
         <img src="/sns/sns3.png" alt="sns3" style={{ width: '100vw', maxWidth: 480, height: 'auto', objectFit: 'contain', display: 'block' }} />

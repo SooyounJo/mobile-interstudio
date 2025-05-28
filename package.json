@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^1.1.0",
+    "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^9.92.7",
     "@react-three/fiber": "^8.15.12",
     "next": "14.1.0",
@@ -17,6 +19,7 @@
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.17",
-    "three": "^0.160.0"
+    "three": "^0.160.0",
+    "tslib": "^2.8.1"
   }
 }
