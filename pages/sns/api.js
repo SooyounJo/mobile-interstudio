@@ -1,3 +1,6 @@
+// 파일명 변경: AIAPI.js → api.js (실제 파일명 변경은 시스템 명령 필요)
+// 아래 코드를 pages/sns/api.js로 옮겨주세요.
+
 // AIAPI.js: AI 일기 생성 및 base64 변환 함수
 
 // 이미지 URL을 base64로 변환

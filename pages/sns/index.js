@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ImageSection from './ImageSection';
 import AnimationSection from './AnimationSection';
-import { generateDiaryFromImage } from './AIAPI';
+import { generateDiaryFromImage } from './api';
 
 export default function SNSPage() {
   const [activeBar, setActiveBar] = useState(2);
