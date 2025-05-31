@@ -84,18 +84,16 @@ export default function SNSPage() {
     <div style={{ minHeight: '100vh', background: '#fff', position: 'relative' }}>
       <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', paddingTop: 0, paddingBottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
         <ImageSection newFeed={newFeed} onAddDiary={() => router.push('/map')} />
-        {/* AI 글 박스(학교명 등 필요시 별도 분리) */}
-        {newFeed && (
-          <div style={{ position: 'absolute', top: '2280px', left: '50%', transform: 'translate(-50%, 0)', width: 220, height: 'auto', borderRadius: 18, background: '#f3f3f3', padding: '12px', color: '#333', fontSize: 14, marginTop: 18, zIndex: 10, textAlign: 'center', minHeight: 60 }}>
-            석관동 한국예술종합학교
-          </div>
-        )}
-        {/* 줄거리 박스(타이핑/로딩/에러) */}
+        <img src="/sns/sns3.png" alt="sns3" style={{ width: '100vw', maxWidth: 480, height: 'auto', objectFit: 'contain', display: 'block' }} />
+      </div>
+
+      {/* 일기 결과를 페이지 맨 아래에 자연스럽게 출력 */}
+      <div style={{ width: '100vw', maxWidth: 480, margin: '0 auto', paddingBottom: 32 }}>
         {newFeed && (
           <AnimationSection loading={loading} error={error} displayedText2={displayedText2} />
         )}
-        <img src="/sns/sns3.png" alt="sns3" style={{ width: '100vw', maxWidth: 480, height: 'auto', objectFit: 'contain', display: 'block' }} />
       </div>
+
       {/* 하단 minibar, 바 버튼, 추억 추가하기 버튼 등은 기존 코드 그대로 복사/분리 가능 */}
       {/* ... (생략) ... */}
     </div>

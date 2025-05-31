@@ -14,20 +14,20 @@ export function getBase64FromUrl(url) {
 
 // AI 일기 생성 함수
 export async function generateDiaryFromImage(imageUrl, userName, weather, location, date) {
-  const base64ImageData = await getBase64FromUrl(imageUrl);
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      base64Image: base64ImageData,
-      userName,
-      weather,
-      location,
-      date,
-    }),
-  });
+    const base64ImageData = await getBase64FromUrl(imageUrl);
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        base64Image: base64ImageData,
+        userName,
+        weather,
+        location,
+        date,
+      }),
+    });
   if (!response.ok) return '';
-  const data = await response.json();
+    const data = await response.json();
   console.log('AI 응답:', response.text);
   return data.text || '';
 } 

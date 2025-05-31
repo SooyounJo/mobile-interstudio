@@ -91,166 +91,166 @@ export default function AppMainImage() {
   return (
     <>
       {showIntro && <Intro onFinish={name => { setUserName(name); setShowIntro(false); }} />}
-      <div
-        style={{
-          width: '100vw',
-          minHeight: '100vh',
-          background: '#000',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          overflowY: 'auto',
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}>
-          {/* 공중에 떠있는 clo.png (인트로 중에도 페이드인) */}
+    <div
+      style={{
+        width: '100vw',
+        minHeight: '100vh',
+        background: '#000',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        overflowY: 'auto',
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}>
+        {/* 공중에 떠있는 clo.png (인트로 중에도 페이드인) */}
+        <img
+          src="/app/clo.png"
+          alt="clo"
+          style={{
+            position: 'absolute',
+            top: 200 + floatY,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '64vw',
+            maxWidth: 310,
+            height: 'auto',
+            objectFit: 'contain',
+            zIndex: 20,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            filter: 'drop-shadow(0 8px 16px rgba(37,99,235,0.18))',
+            transition: 'filter 0.2s, opacity 2s',
+            opacity: cloOpacity,
+          }}
+        />
+        {/* 8초 뒤 자동 등장하는 sew.png */}
+        {isFirstEntry && showSew && (
           <img
-            src="/app/clo.png"
-            alt="clo"
+            src="/app/sew.png"
+            alt="sew"
             style={{
               position: 'absolute',
-              top: 200 + floatY,
+              top: 550,
               left: '50%',
-              transform: 'translateX(-50%)',
-              width: '64vw',
-              maxWidth: 310,
-              height: 'auto',
-              objectFit: 'contain',
-              zIndex: 20,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              filter: 'drop-shadow(0 8px 16px rgba(37,99,235,0.18))',
-              transition: 'filter 0.2s, opacity 2s',
-              opacity: cloOpacity,
-            }}
-          />
-          {/* 8초 뒤 자동 등장하는 sew.png */}
-          {isFirstEntry && showSew && (
-            <img
-              src="/app/sew.png"
-              alt="sew"
-              style={{
-                position: 'absolute',
-                top: 550,
-                left: '50%',
-                width: '100vw',
-                maxWidth: 480,
-                height: 'auto',
-                objectFit: 'contain',
-                transform: `translate(-50%, 0) scaleX(${sewAppear ? 1 : 0})`,
-                transformOrigin: 'right center',
-                opacity: sewAppear ? 1 : 0,
-                zIndex: 21,
-                pointerEvents: 'none',
-                userSelect: 'none',
-                transition: 'transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.5s',
-                boxShadow: '0 8px 24px 0 #2563eb22',
-              }}
-            />
-          )}
-          {/* 오버레이 이미지 (항상 가장 위) */}
-          {isFirstEntry && !hide && (
-            <img
-              src="/app/appmain.png"
-              alt="앱 메인"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100vw',
-                maxWidth: 480,
-                height: 'auto',
-                objectFit: 'contain',
-                objectPosition: 'top center',
-                background: 'transparent',
-                pointerEvents: 'none',
-                opacity: fadeout ? 0 : 1,
-                transition: 'opacity 1s ease',
-                zIndex: 100,
-              }}
-            />
-          )}
-          {/* 메인 이미지 */}
-          <img
-            src="/app/main4.png"
-            alt="앱 메인2"
-            style={{
               width: '100vw',
               maxWidth: 480,
-              minHeight: '100vh',
+              height: 'auto',
+              objectFit: 'contain',
+              transform: `translate(-50%, 0) scaleX(${sewAppear ? 1 : 0})`,
+              transformOrigin: 'right center',
+              opacity: sewAppear ? 1 : 0,
+              zIndex: 21,
+              pointerEvents: 'none',
+              userSelect: 'none',
+              transition: 'transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.5s',
+              boxShadow: '0 8px 24px 0 #2563eb22',
+            }}
+          />
+        )}
+        {/* 오버레이 이미지 (항상 가장 위) */}
+        {isFirstEntry && !hide && (
+          <img
+            src="/app/appmain.png"
+            alt="앱 메인"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              maxWidth: 480,
               height: 'auto',
               objectFit: 'contain',
               objectPosition: 'top center',
-              display: 'block',
-              background: '#000',
-            }}
-          />
-          {/* 하단 minibar.png 배경 + 선택 바 버튼 3개 */}
-          <img
-            src="/app/minibar.png"
-            alt="minibar"
-            style={{
-              position: 'fixed',
-              left: '50%',
-              bottom: -10,
-              width: '100%',
-              maxWidth: 480,
-              minWidth: 0,
-              zIndex: 30,
-              transform: 'translateX(-50%)',
+              background: 'transparent',
               pointerEvents: 'none',
-              userSelect: 'none',
+              opacity: fadeout ? 0 : 1,
+              transition: 'opacity 1s ease',
+              zIndex: 100,
             }}
           />
-          <div
-            style={{
-              position: 'fixed',
-              left: '50%',
-              bottom: -10,
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              zIndex: 31,
-              width: '100%',
-              maxWidth: 480,
-              justifyContent: 'center',
-              pointerEvents: 'auto',
-            }}
-          >
-            {[1,2,3].map(num => (
-              <button
-                key={num}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: '0 27px',
-                  width: 72,
-                  height: 72,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'transform 0.18s cubic-bezier(.4,0,.2,1)',
-                  transform: activeBar === num ? 'scale(1.18)' : 'scale(1.0)',
-                }}
-                onClick={() => {
-                  setActiveBar(num);
-                  if(num === 1) router.push('/');
-                  if(num === 2) router.push('/sns');
-                  if(num === 3) router.push('/fullmap');
-                }}
-              >
-                <img
-                  src={`/bar/${num}.png`}
-                  alt={`버튼${num}`}
-                  style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
-                />
-              </button>
-            ))}
-          </div>
+        )}
+        {/* 메인 이미지 */}
+        <img
+          src="/app/main4.png"
+          alt="앱 메인2"
+          style={{
+            width: '100vw',
+            maxWidth: 480,
+            minHeight: '100vh',
+            height: 'auto',
+            objectFit: 'contain',
+            objectPosition: 'top center',
+            display: 'block',
+            background: '#000',
+          }}
+        />
+        {/* 하단 minibar.png 배경 + 선택 바 버튼 3개 */}
+        <img
+          src="/app/minibar.png"
+          alt="minibar"
+          style={{
+            position: 'fixed',
+            left: '50%',
+            bottom: -10,
+            width: '100%',
+            maxWidth: 480,
+            minWidth: 0,
+            zIndex: 30,
+            transform: 'translateX(-50%)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'fixed',
+            left: '50%',
+            bottom: -10,
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            zIndex: 31,
+            width: '100%',
+            maxWidth: 480,
+            justifyContent: 'center',
+            pointerEvents: 'auto',
+          }}
+        >
+          {[1,2,3].map(num => (
+            <button
+              key={num}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                margin: '0 27px',
+                width: 72,
+                height: 72,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.18s cubic-bezier(.4,0,.2,1)',
+                transform: activeBar === num ? 'scale(1.18)' : 'scale(1.0)',
+              }}
+              onClick={() => {
+                setActiveBar(num);
+                if(num === 1) router.push('/');
+                if(num === 2) router.push('/sns');
+                if(num === 3) router.push('/fullmap');
+              }}
+            >
+              <img
+                src={`/bar/${num}.png`}
+                alt={`버튼${num}`}
+                style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
+              />
+            </button>
+          ))}
         </div>
       </div>
+    </div>
     </>
   );
 }
