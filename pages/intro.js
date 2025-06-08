@@ -1,0 +1,185 @@
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+
+export default function IntroAnimation() {
+  const [fadeIntro, setFadeIntro] = useState(false);
+  const [showName, setShowName] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [showInput, setShowInput] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // intro.png 페이드아웃 애니메이션
+    const timer1 = setTimeout(() => {
+      setFadeIntro(true);
+    }, 2000);
+
+    // name.png 표시
+    const timer2 = setTimeout(() => {
+      setShowName(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  const handleNext = () => {
+    if (userName.trim()) {
+      localStorage.setItem('userName', userName.trim());
+      router.push('/');
+    } else {
+      alert('이름을 입력해주세요');
+    }
+  };
+
+  const handleNameClick = () => {
+    setShowInput(true);
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+      zIndex: 9999,
+    }}>
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+      }}>
+        {/* intro.png 이미지 */}
+        <img
+          src="/app/intro.png"
+          alt="인트로"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: fadeIntro ? 0 : 1,
+            transition: 'opacity 1s ease',
+          }}
+        />
+        
+        {/* name.png 이미지와 입력 필드 */}
+        {showName && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
+            }}>
+              <img
+                src="/app/name.png"
+                alt="이름"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+              
+              {/* 이름 입력 영역 */}
+              <div 
+                onClick={handleNameClick}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '80%',
+                  maxWidth: '300px',
+                  padding: '20px',
+                  textAlign: 'center',
+                  cursor: 'text',
+                }}
+              >
+                {showInput ? (
+                  <input
+                    type="text"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="이름을 입력하세요"
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '15px',
+                      fontSize: '18px',
+                      border: 'none',
+                      borderRadius: '10px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      textAlign: 'center',
+                      outline: 'none',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    color: '#fff',
+                    fontSize: '18px',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                  }}>
+                    터치하여 이름 입력
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* 다음 버튼 */}
+            <button
+              onClick={handleNext}
+              style={{
+                position: 'absolute',
+                bottom: '40px',
+                right: '40px',
+                padding: '12px 24px',
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                transition: 'transform 0.2s ease',
+                zIndex: 10,
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              다음
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+} 

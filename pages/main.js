@@ -32,7 +32,7 @@ export default function Main() {
 
   return (
     <Container $fadeout={fadeout}>
-      <img src="/app/appmain.png" alt="앱 메인" style={{ width: 154, height: 154, objectFit: 'contain' }} />
+      <img src="/app/intro.png" alt="앱 메인" style={{ width: 154, height: 154, objectFit: 'contain' }} />
     </Container>
   );
 } 
