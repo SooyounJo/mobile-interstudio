@@ -7,7 +7,53 @@ export default function IntroAnimation() {
   const [nameOpacity, setNameOpacity] = useState(0);
   const [userName, setUserName] = useState('');
   const [showInput, setShowInput] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(true);
+  const [transitioning, setTransitioning] = useState(false);
   const router = useRouter();
+
+  // 백그라운드에서 메인 페이지 리소스 프리로딩
+  useEffect(() => {
+    // 메인 페이지 프리로드
+    router.prefetch('/');
+    
+    // 주요 이미지들 프리로드
+    const preloadImages = [
+      '/app/fir.png',
+      '/app/fir2.png', 
+      '/app/clo.png',
+      '/bar/bar.png',
+      '/bar/4.png',
+      '/bar/5.png',
+      '/bar/6.png'
+    ];
+
+    let loadedCount = 0;
+    const totalImages = preloadImages.length;
+
+    preloadImages.forEach(src => {
+      const img = new Image();
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setIsPreloading(false);
+        }
+      };
+      img.onerror = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setIsPreloading(false);
+        }
+      };
+      img.src = src;
+    });
+
+    // 백업: 최대 3초 후에는 강제로 프리로딩 완료 처리
+    const backupTimer = setTimeout(() => {
+      setIsPreloading(false);
+    }, 3000);
+
+    return () => clearTimeout(backupTimer);
+  }, [router]);
 
   useEffect(() => {
     // name.png 먼저 렌더링 (투명하게)
@@ -39,16 +85,16 @@ export default function IntroAnimation() {
       // 로컬스토리지에 이름 저장
       localStorage.setItem('userName', userName.trim());
       
-      // 페이지 전환 전에 미리 로드
-      router.prefetch('/');
+      // 전환 애니메이션 시작
+      setTransitioning(true);
       
-      // 부드러운 전환을 위한 짧은 지연
+      // 부드러운 그라데이션 페이드아웃 후 페이지 전환
       setTimeout(() => {
         router.push({
           pathname: '/',
           query: { from: 'intro' }
         }, '/');
-      }, 100);
+      }, 800); // 페이드아웃 애니메이션 시간
     } else {
       alert('이름을 입력해주세요');
     }
@@ -71,7 +117,46 @@ export default function IntroAnimation() {
       background: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
       zIndex: 9999,
       overflow: 'hidden',
+      opacity: transitioning ? 0 : 1,
+      transition: 'opacity 0.8s ease-out',
     }}>
+      {/* 프리로딩 인디케이터 */}
+      {isPreloading && (
+        <div style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '20px',
+          padding: '8px 16px',
+          color: '#fff',
+          fontSize: '12px',
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <div style={{
+            width: '12px',
+            height: '12px',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '2px solid #fff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+          }}></div>
+          리소스 준비 중...
+        </div>
+      )}
+      
+      {/* 로딩 애니메이션을 위한 CSS */}
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
       <div style={{
         position: 'relative',
         width: '100%',
@@ -170,27 +255,29 @@ export default function IntroAnimation() {
             {/* 다음 버튼 */}
             <button
               onClick={handleNext}
+              disabled={isPreloading || transitioning}
               style={{
                 position: 'absolute',
                 bottom: '40px',
                 right: '40px',
                 padding: '12px 24px',
-                background: '#2563eb',
+                background: isPreloading ? '#94a3b8' : '#2563eb',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: 'pointer',
+                cursor: isPreloading ? 'not-allowed' : 'pointer',
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                transition: 'transform 0.2s ease',
+                transition: 'all 0.3s ease',
                 zIndex: 10,
+                opacity: transitioning ? 0.5 : 1,
               }}
-              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseDown={e => !isPreloading && (e.currentTarget.style.transform = 'scale(0.98)')}
+              onMouseUp={e => !isPreloading && (e.currentTarget.style.transform = 'scale(1)')}
+              onMouseLeave={e => !isPreloading && (e.currentTarget.style.transform = 'scale(1)')}
             >
-              다음
+              {isPreloading ? '준비 중...' : transitioning ? '이동 중...' : '다음'}
             </button>
           </div>
         )}

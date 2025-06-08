@@ -8,7 +8,17 @@ export default function FullMap() {
   const [start, setStart] = useState({ x: 0, y: 0 });
   const [imgStart, setImgStart] = useState({ x: 0, y: 0 });
   const [activeBar, setActiveBar] = useState(3); // 3번 버튼 활성화
+  const [pageOpacity, setPageOpacity] = useState(0);
   const router = useRouter();
+
+  // 페이지 진입 시 부드러운 페이드인 효과
+  React.useEffect(() => {
+    const fadeInTimer = setTimeout(() => {
+      setPageOpacity(1);
+    }, 100);
+
+    return () => clearTimeout(fadeInTimer);
+  }, []);
   const containerRef = useRef();
 
   // 화면 크기, 이미지 크기 계산
@@ -112,6 +122,8 @@ export default function FullMap() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        opacity: pageOpacity,
+        transition: 'opacity 0.8s ease-out',
       }}
       onMouseMove={onPointerMove}
       onMouseUp={onPointerUp}
@@ -193,9 +205,15 @@ export default function FullMap() {
             }}
             onClick={() => {
               setActiveBar(num);
-              if(num === 1) router.push('/');
-              if(num === 2) router.push('/sns');
-              if(num === 3) router.push('/fullmap');
+              // 페이지 전환 애니메이션
+              document.body.style.opacity = '0.7';
+              document.body.style.transition = 'opacity 0.4s ease-out';
+              
+              setTimeout(() => {
+                if(num === 1) router.push('/');
+                if(num === 2) router.push('/sns/sns2');
+                if(num === 3) router.push('/fullmap');
+              }, 400);
             }}
           >
             <img

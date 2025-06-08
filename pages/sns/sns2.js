@@ -6,12 +6,22 @@ import { useAnimations } from '../../hooks/useInteractions';
 
 export default function SNS2() {
   const router = useRouter();
+  const [pageOpacity, setPageOpacity] = React.useState(0);
   
   const { 
     activeBar, 
     setActiveBar, 
     animatingButton 
   } = useAnimations();
+
+  // 페이지 진입 시 부드러운 페이드인 효과
+  React.useEffect(() => {
+    const fadeInTimer = setTimeout(() => {
+      setPageOpacity(1);
+    }, 100);
+
+    return () => clearTimeout(fadeInTimer);
+  }, []);
 
   // 슬라이딩 상태 관리
   const [currentPage, setCurrentPage] = React.useState(0); // 0: sn.png, 1: day1.png
@@ -111,12 +121,14 @@ export default function SNS2() {
       <div
         style={{
           width: '100vw',
-          minHeight: '100vh',
+          height: '100vh',
           background: '#000',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          overflow: 'visible',
+          overflow: 'hidden',
+          opacity: pageOpacity,
+          transition: 'opacity 0.8s ease-out',
         }}
       >
         <div 
@@ -163,11 +175,11 @@ export default function SNS2() {
             alt="Day 1"
             style={{
               position: 'absolute',
-              top: '50%',
+              top: 'calc(50% - 40px)',
               left: '50%',
               transform: `translate(calc(-50% + ${slideOffset + (currentPage === 1 ? 0 : screenWidth)}px), -50%)`,
-              width: '72vw',
-              maxWidth: 345,
+              width: '65vw',
+              maxWidth: 310,
               height: 'auto',
               objectFit: 'contain',
               objectPosition: 'center',
@@ -184,11 +196,11 @@ export default function SNS2() {
             alt="SN"
             style={{
               position: 'absolute',
-              top: 'calc(50% - 50px)',
+              top: 'calc(50% - 90px)',
               left: '50%',
               transform: `translate(calc(-50% + ${slideOffset + (currentPage === 0 ? 0 : -screenWidth)}px), -50%)`,
-              width: '75vw',
-              maxWidth: 360,
+              width: '68vw',
+              maxWidth: 325,
               height: 'auto',
               objectFit: 'contain',
               objectPosition: 'center',

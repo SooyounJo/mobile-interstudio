@@ -1,6 +1,34 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 
 const Bar = memo(({ activeBar, setActiveBar, animatingButton, router }) => {
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // 부드러운 페이지 전환 함수
+  const handleNavigation = (num, path) => {
+    if (isTransitioning) return; // 전환 중이면 무시
+    
+    setActiveBar(num);
+    setIsTransitioning(true);
+    
+    // 현재 페이지와 같으면 전환하지 않음
+    if (router.asPath === path) {
+      setIsTransitioning(false);
+      return;
+    }
+    
+    // 페이지 전환 애니메이션
+    document.body.style.opacity = '0.7';
+    document.body.style.transition = 'opacity 0.4s ease-out';
+    
+    setTimeout(() => {
+      router.push(path).then(() => {
+        setTimeout(() => {
+          document.body.style.opacity = '1';
+          setIsTransitioning(false);
+        }, 200);
+      });
+    }, 400);
+  };
   return (
     <>
       {/* 하단 bar.png 배경 */}
@@ -53,13 +81,13 @@ const Bar = memo(({ activeBar, setActiveBar, animatingButton, router }) => {
               transition: 'transform 0.18s cubic-bezier(.4,0,.2,1), opacity 0.2s ease',
               transform: activeBar === num ? 'scale(1.18)' : 
                         animatingButton === num ? 'scale(1.15)' : 'scale(1.0)',
-              cursor: 'pointer',
+              cursor: isTransitioning ? 'not-allowed' : 'pointer',
+              opacity: isTransitioning ? 0.6 : 1,
             }}
             onClick={() => {
-              setActiveBar(num);
-              if (num === 4) router.push('/');
-              if (num === 5) router.push('/sns/sns2');
-              if (num === 6) router.push('/fullmap');
+              if (num === 4) handleNavigation(4, '/');
+              if (num === 5) handleNavigation(5, '/sns/sns2');
+              if (num === 6) handleNavigation(6, '/fullmap');
             }}
             onMouseEnter={e => {
               if (activeBar !== num) e.currentTarget.style.transform = 'scale(1.1)';

@@ -16,6 +16,8 @@ import {
 
 export default function AppMainImage() {
   const router = useRouter();
+  const [pageOpacity, setPageOpacity] = React.useState(0);
+  const [isFromIntro, setIsFromIntro] = React.useState(false);
 
   // 커스텀 훅들 사용 (마우스 팔로잉 제거로 최적화됨)
   const { 
@@ -29,6 +31,18 @@ export default function AppMainImage() {
   } = useAnimations();
   const userName = useUserData();
   const { particles, createParticle } = useParticles();
+
+  // 페이지 진입 시 부드러운 페이드인 효과
+  React.useEffect(() => {
+    setIsFromIntro(router.query.from === 'intro');
+    
+    // 페이지 로드 후 바로 페이드인 시작
+    const fadeInTimer = setTimeout(() => {
+      setPageOpacity(1);
+    }, 100);
+
+    return () => clearTimeout(fadeInTimer);
+  }, [router.query.from]);
 
   // URL 리다이렉트 처리
   React.useEffect(() => {
@@ -52,7 +66,9 @@ export default function AppMainImage() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-          overflow: 'visible',
+        overflow: 'visible',
+        opacity: pageOpacity,
+        transition: isFromIntro ? 'opacity 1.2s ease-out' : 'opacity 0.6s ease-out',
         }}
       >
               <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}
