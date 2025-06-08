@@ -27,8 +27,15 @@ export default function IntroAnimation() {
 
   const handleNext = () => {
     if (userName.trim()) {
+      // 쿠키 설정
+      document.cookie = 'visited=true; path=/';
+      // 로컬스토리지에 이름 저장
       localStorage.setItem('userName', userName.trim());
-      router.push('/');
+      // index 페이지로 이동
+      router.push({
+        pathname: '/',
+        query: { from: 'intro' }
+      }, '/');
     } else {
       alert('이름을 입력해주세요');
     }
@@ -47,32 +54,43 @@ export default function IntroAnimation() {
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       background: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
       zIndex: 9999,
+      overflow: 'hidden',
     }}>
       <div style={{
         position: 'relative',
         width: '100%',
+        maxWidth: '480px',
         height: '100%',
-        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}>
         {/* intro.png 이미지 */}
-        <img
-          src="/app/intro.png"
-          alt="인트로"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            opacity: fadeIntro ? 0 : 1,
-            transition: 'opacity 1s ease',
-          }}
-        />
+        <div style={{
+          position: 'relative',
+          width: '100%',
+          paddingTop: '100%', // 1:1 비율 유지
+          overflow: 'hidden',
+        }}>
+          <img
+            src="/app/intro.png"
+            alt="인트로"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              objectPosition: 'top center',
+              opacity: fadeIntro ? 0 : 1,
+              transition: 'opacity 1s ease',
+            }}
+          />
+        </div>
         
         {/* name.png 이미지와 입력 필드 */}
         {showName && (
@@ -84,25 +102,25 @@ export default function IntroAnimation() {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
           }}>
             <div style={{
               position: 'relative',
               width: '100%',
-              height: '100%',
+              paddingTop: '100%', // 1:1 비율 유지
+              overflow: 'hidden',
             }}>
               <img
                 src="/app/name.png"
                 alt="이름"
                 style={{
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
+                  top: 0,
+                  left: 0,
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
+                  objectPosition: 'top center',
                 }}
               />
               
@@ -113,10 +131,10 @@ export default function IntroAnimation() {
                   position: 'absolute',
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '80%',
-                  maxWidth: '300px',
-                  padding: '20px',
+                  transform: 'translate(-50%, -50%) rotate(-3deg)',
+                  width: '45%',
+                  maxWidth: '160px',
+                  padding: '8px',
                   textAlign: 'center',
                   cursor: 'text',
                 }}
@@ -130,21 +148,23 @@ export default function IntroAnimation() {
                     autoFocus
                     style={{
                       width: '100%',
-                      padding: '15px',
-                      fontSize: '18px',
+                      padding: '8px',
+                      fontSize: '16px',
                       border: 'none',
-                      borderRadius: '10px',
+                      borderRadius: '6px',
                       backgroundColor: 'rgba(255, 255, 255, 0.9)',
                       textAlign: 'center',
                       outline: 'none',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                      transform: 'rotate(0deg)',
                     }}
                   />
                 ) : (
                   <div style={{
                     color: '#fff',
-                    fontSize: '18px',
+                    fontSize: '14px',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                    transform: 'rotate(0deg)',
                   }}>
                     터치하여 이름 입력
                   </div>

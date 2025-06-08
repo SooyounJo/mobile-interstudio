@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import IntroAnimation from '../public/app/intro';
 
 export default function AppMainImage() {
   const [floatY, setFloatY] = useState(0);
@@ -8,14 +7,35 @@ export default function AppMainImage() {
   const [sewAppear, setSewAppear] = useState(false);
   const [cloOpacity, setCloOpacity] = useState(1);
   const [activeBar, setActiveBar] = useState(null);
-  const [isFirstEntry, setIsFirstEntry] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    // URL에 from=intro가 없고, visited 쿠키도 없으면 intro 페이지로 리다이렉트
+    if (typeof window !== 'undefined' && 
+        !router.query.from && 
+        !document.cookie.includes('visited=true')) {
+      router.replace('/intro');
+    }
+  }, [router]);
 
   useEffect(() => {
     // sew가 이미 보여졌다면 리로드해도 보이도록 설정
     if (typeof window !== 'undefined' && window.sessionStorage.getItem('closie_sew_shown')) {
       setShowSew(true);
       setSewAppear(true);
+    } else {
+      // sew.png 애니메이션 시작
+      const timer = setTimeout(() => {
+        setShowSew(true);
+        setTimeout(() => {
+          setSewAppear(true);
+          if (typeof window !== 'undefined') {
+            window.sessionStorage.setItem('closie_sew_shown', '1');
+          }
+        }, 10);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -31,146 +51,182 @@ export default function AppMainImage() {
   }, []);
 
   return (
-    <>
-      {isFirstEntry && <IntroAnimation />}
-      <div
-        style={{
-          width: '100vw',
-          minHeight: '100vh',
-          background: '#000',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          overflowY: 'auto',
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}>
-          {/* 공중에 떠있는 clo.png */}
+    <div
+      style={{
+        width: '100vw',
+        minHeight: '100vh',
+        background: '#000',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        overflowY: 'auto',
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}>
+        {/* 뒤로가기 버튼 */}
+        <button
+          onClick={() => router.back()}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '20px',
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 50,
+            backdropFilter: 'blur(4px)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+            transition: 'transform 0.2s ease, background-color 0.2s ease',
+          }}
+          onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+          onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="white"
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+
+        {/* 공중에 떠있는 clo.png */}
+        <img
+          src="/app/clo.png"
+          alt="clo"
+          style={{
+            position: 'absolute',
+            top: 200 + floatY,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '64vw',
+            maxWidth: 310,
+            height: 'auto',
+            objectFit: 'contain',
+            zIndex: 20,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            filter: 'drop-shadow(0 8px 16px rgba(37,99,235,0.18))',
+            transition: 'filter 0.2s, opacity 2s',
+            opacity: cloOpacity,
+          }}
+        />
+        {/* sew.png */}
+        {showSew && (
           <img
-            src="/app/clo.png"
-            alt="clo"
+            src="/app/sew.png"
+            alt="sew"
             style={{
               position: 'absolute',
-              top: 200 + floatY,
+              top: 550,
               left: '50%',
-              transform: 'translateX(-50%)',
-              width: '64vw',
-              maxWidth: 310,
-              height: 'auto',
-              objectFit: 'contain',
-              zIndex: 20,
-              pointerEvents: 'none',
-              userSelect: 'none',
-              filter: 'drop-shadow(0 8px 16px rgba(37,99,235,0.18))',
-              transition: 'filter 0.2s, opacity 2s',
-              opacity: cloOpacity,
-            }}
-          />
-          {/* 8초 뒤 자동 등장하는 sew.png */}
-          {showSew && (
-            <img
-              src="/app/sew.png"
-              alt="sew"
-              style={{
-                position: 'absolute',
-                top: 550,
-                left: '50%',
-                width: '100vw',
-                maxWidth: 480,
-                height: 'auto',
-                objectFit: 'contain',
-                transform: `translate(-50%, 0) scaleX(${sewAppear ? 1 : 0})`,
-                transformOrigin: 'right center',
-                opacity: sewAppear ? 1 : 0,
-                zIndex: 21,
-                pointerEvents: 'none',
-                userSelect: 'none',
-                transition: 'transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.5s',
-                boxShadow: '0 8px 24px 0 #2563eb22',
-              }}
-            />
-          )}
-          {/* 메인 이미지 */}
-          <img
-            src="/app/main4.png"
-            alt="앱 메인2"
-            style={{
               width: '100vw',
               maxWidth: 480,
-              minHeight: '100vh',
               height: 'auto',
               objectFit: 'contain',
-              objectPosition: 'top center',
-              display: 'block',
-              background: '#000',
-            }}
-          />
-          {/* 하단 minibar.png 배경 + 선택 바 버튼 3개 */}
-          <img
-            src="/app/minibar.png"
-            alt="minibar"
-            style={{
-              position: 'fixed',
-              left: '50%',
-              bottom: -10,
-              width: '100%',
-              maxWidth: 480,
-              minWidth: 0,
-              zIndex: 30,
-              transform: 'translateX(-50%)',
+              transform: `translate(-50%, 0) scaleX(${sewAppear ? 1 : 0})`,
+              transformOrigin: 'right center',
+              opacity: sewAppear ? 1 : 0,
+              zIndex: 21,
               pointerEvents: 'none',
               userSelect: 'none',
+              transition: 'transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.5s',
+              boxShadow: '0 8px 24px 0 #2563eb22',
             }}
           />
-          <div
-            style={{
-              position: 'fixed',
-              left: '50%',
-              bottom: -10,
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              zIndex: 31,
-              width: '100%',
-              maxWidth: 480,
-              justifyContent: 'center',
-              pointerEvents: 'auto',
-            }}
-          >
-            {[1,2,3].map(num => (
-              <button
-                key={num}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: '0 27px',
-                  width: 72,
-                  height: 72,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'transform 0.18s cubic-bezier(.4,0,.2,1)',
-                  transform: activeBar === num ? 'scale(1.18)' : 'scale(1.0)',
-                }}
-                onClick={() => {
-                  setActiveBar(num);
-                  if(num === 1) router.push('/');
-                  if(num === 2) router.push('/sns');
-                  if(num === 3) router.push('/fullmap');
-                }}
-              >
-                <img
-                  src={`/bar/${num}.png`}
-                  alt={`버튼${num}`}
-                  style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
-                />
-              </button>
-            ))}
-          </div>
+        )}
+        {/* 메인 이미지 */}
+        <img
+          src="/app/main4.png"
+          alt="앱 메인2"
+          style={{
+            width: '100vw',
+            maxWidth: 480,
+            minHeight: '100vh',
+            height: 'auto',
+            objectFit: 'contain',
+            objectPosition: 'top center',
+            display: 'block',
+            background: '#000',
+          }}
+        />
+        {/* 하단 minibar.png 배경 + 선택 바 버튼 3개 */}
+        <img
+          src="/app/minibar.png"
+          alt="minibar"
+          style={{
+            position: 'fixed',
+            left: '50%',
+            bottom: -10,
+            width: '100%',
+            maxWidth: 480,
+            minWidth: 0,
+            zIndex: 30,
+            transform: 'translateX(-50%)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'fixed',
+            left: '50%',
+            bottom: -10,
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            zIndex: 31,
+            width: '100%',
+            maxWidth: 480,
+            justifyContent: 'center',
+            pointerEvents: 'auto',
+          }}
+        >
+          {[1,2,3].map(num => (
+            <button
+              key={num}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                margin: '0 27px',
+                width: 72,
+                height: 72,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.18s cubic-bezier(.4,0,.2,1)',
+                transform: activeBar === num ? 'scale(1.18)' : 'scale(1.0)',
+              }}
+              onClick={() => {
+                setActiveBar(num);
+                if(num === 1) router.push('/');
+                if(num === 2) router.push('/sns');
+                if(num === 3) router.push('/fullmap');
+              }}
+            >
+              <img
+                src={`/bar/${num}.png`}
+                alt={`버튼${num}`}
+                style={{ width: 72, height: 72, objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }}
+              />
+            </button>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
