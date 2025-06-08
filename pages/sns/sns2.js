@@ -18,6 +18,21 @@ export default function SNS2() {
   const [slideOffset, setSlideOffset] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState(null);
+  const [screenWidth, setScreenWidth] = React.useState(480); // 기본값 설정
+
+  // 화면 크기 감지 (클라이언트에서만 실행)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const updateScreenWidth = () => {
+        setScreenWidth(window.innerWidth);
+      };
+      
+      updateScreenWidth(); // 초기값 설정
+      window.addEventListener('resize', updateScreenWidth);
+      
+      return () => window.removeEventListener('resize', updateScreenWidth);
+    }
+  }, []);
 
   // 터치/마우스 시작
   const handleStart = (clientX) => {
@@ -48,12 +63,12 @@ export default function SNS2() {
     if (currentPage === 0 && slideOffset <= -threshold) {
       // 좌측으로 충분히 드래그 → day1 페이지로 전환
       setCurrentPage(1);
-      setSlideOffset(-window.innerWidth);
+      setSlideOffset(-screenWidth);
       setTimeout(() => setSlideOffset(0), 300);
     } else if (currentPage === 1 && slideOffset >= threshold) {
       // 우측으로 충분히 드래그 → sn 페이지로 전환
       setCurrentPage(0);  
-      setSlideOffset(window.innerWidth);
+      setSlideOffset(screenWidth);
       setTimeout(() => setSlideOffset(0), 300);
     } else {
       // 임계값 미달 → 원래 위치로 복귀
@@ -69,7 +84,6 @@ export default function SNS2() {
     // 드래그 중이면 무시
     if (isDragging) return;
     
-    const screenWidth = window.innerWidth;
     const tapX = e.clientX;
     const leftZone = screenWidth * 0.3; // 좌측 30% 영역
     const rightZone = screenWidth * 0.7; // 우측 30% 영역
@@ -77,12 +91,12 @@ export default function SNS2() {
     if (tapX < leftZone && currentPage === 1) {
       // 좌측 터치 → sn 페이지로 전환
       setCurrentPage(0);
-      setSlideOffset(window.innerWidth);
+      setSlideOffset(screenWidth);
       setTimeout(() => setSlideOffset(0), 300);
     } else if (tapX > rightZone && currentPage === 0) {
       // 우측 터치 → day1 페이지로 전환
       setCurrentPage(1);
-      setSlideOffset(-window.innerWidth);
+      setSlideOffset(-screenWidth);
       setTimeout(() => setSlideOffset(0), 300);
     }
   };
@@ -151,7 +165,7 @@ export default function SNS2() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 1 ? 0 : window.innerWidth || 480)}px), -50%)`,
+              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 1 ? 0 : screenWidth)}px), -50%)`,
               width: '72vw',
               maxWidth: 345,
               height: 'auto',
@@ -172,7 +186,7 @@ export default function SNS2() {
               position: 'absolute',
               top: 'calc(50% - 50px)',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 0 ? 0 : -(window.innerWidth || 480))}px), -50%)`,
+              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 0 ? 0 : -screenWidth)}px), -50%)`,
               width: '75vw',
               maxWidth: 360,
               height: 'auto',
