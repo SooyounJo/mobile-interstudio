@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import ImageSection from './ImageSection';
-import AnimationSection from './AnimationSection';
-import { generateDiaryFromImage } from '../../utils/api';
+import ImageSection from '../components/ImageSection';
+import AnimationSection from '../components/AnimationSection';
+import { generateDiaryFromImage } from '../utils/api';
 
 export default function SNSPage() {
   const [activeBar, setActiveBar] = useState(2);

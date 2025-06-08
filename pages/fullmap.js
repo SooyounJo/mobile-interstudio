@@ -76,13 +76,11 @@ export default function FullMap() {
     [
       { left: '30%', top: '28%', size: 90, img: '/sns/sns3.png' },
       { left: '60%', top: '55%', size: 110, img: '/app/clo.png' },
-      { left: '70%', top: '18%', size: 70, img: '/app/sew.png' },
     ],
     // scale > 2
     [
       { left: '30%', top: '28%', size: 90, img: '/sns/sns3.png' },
       { left: '60%', top: '55%', size: 110, img: '/app/clo.png' },
-      { left: '70%', top: '18%', size: 70, img: '/app/sew.png' },
       { left: '45%', top: '40%', size: 60, img: '/bar/1.png' },
       { left: '80%', top: '60%', size: 80, img: '/bar/2.png' },
     ],
@@ -90,7 +88,6 @@ export default function FullMap() {
     [
       { left: '30%', top: '28%', size: 90, img: '/sns/sns3.png' },
       { left: '60%', top: '55%', size: 110, img: '/app/clo.png' },
-      { left: '70%', top: '18%', size: 70, img: '/app/sew.png' },
       { left: '45%', top: '40%', size: 60, img: '/bar/1.png' },
       { left: '80%', top: '60%', size: 80, img: '/bar/2.png' },
       { left: '20%', top: '70%', size: 55, img: '/bar/3.png' },
