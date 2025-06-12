@@ -69,8 +69,8 @@ export default function AppMainImage() {
         overflow: 'visible',
         opacity: pageOpacity,
         transition: isFromIntro ? 'opacity 1.2s ease-out' : 'opacity 0.6s ease-out',
-        }}
-      >
+      }}
+    >
               <div style={{ width: '100%', maxWidth: 480, position: 'relative' }}
              onClick={(e) => createParticle(e.clientX, e.clientY)}>
           
@@ -125,9 +125,9 @@ export default function AppMainImage() {
               onClick={(e) => {
                 e.stopPropagation();
                 createParticle(e.clientX, e.clientY);
-              }}
-            />
-            <img
+            }}
+          />
+        <img
               src="/app/fir2.png"
               alt="두 번째 이미지"
               className="interactive-image"
@@ -145,7 +145,7 @@ export default function AppMainImage() {
                 e.stopPropagation();
                 createParticle(e.clientX, e.clientY);
               }}
-            />
+              />
         </div>
           {/* Bar 컴포넌트로 분리됨 */}
           <Bar 
