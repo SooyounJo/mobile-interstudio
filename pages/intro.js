@@ -210,9 +210,9 @@ export default function IntroAnimation() {
               onClick={handleNameClick}
               style={{
                 position: 'absolute',
-                top: '65%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) rotate(-3deg)',
+                top: 'calc(65% + 110px)',
+                left: 'calc(50% + 20px)',
+                transform: 'translate(-50%, -50%) rotate(-7deg)',
                 width: '45%',
                 maxWidth: '160px',
                 padding: '8px',

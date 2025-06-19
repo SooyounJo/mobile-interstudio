@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Bar from '../../components/Bar';
 import { useAnimations } from '../../hooks/useInteractions';
 
-export default function SNS2() {
+const SNS2 = () => {
   const router = useRouter();
   const [pageOpacity, setPageOpacity] = React.useState(0);
   
@@ -83,13 +83,13 @@ export default function SNS2() {
       // 좌측으로 충분히 드래그 → 다음 페이지로 전환
       setCurrentPage(currentPage + 1);
       setSlideOffset(-screenWidth);
-      setTimeout(() => setSlideOffset(0), 300);
+      setTimeout(() => setSlideOffset(0), 500);
       if (currentPage === 0) setHasInteracted(true); // 첫번째 인터랙션 완료
     } else if (slideOffset >= threshold && currentPage > 0) {
       // 우측으로 충분히 드래그 → 이전 페이지로 전환
       setCurrentPage(currentPage - 1);  
       setSlideOffset(screenWidth);
-      setTimeout(() => setSlideOffset(0), 300);
+      setTimeout(() => setSlideOffset(0), 500);
     } else {
       // 임계값 미달 → 원래 위치로 복귀
       setSlideOffset(0);
@@ -112,12 +112,12 @@ export default function SNS2() {
       // 좌측 터치 → 이전 페이지로 전환
       setCurrentPage(currentPage - 1);
       setSlideOffset(screenWidth);
-      setTimeout(() => setSlideOffset(0), 300);
+      setTimeout(() => setSlideOffset(0), 500);
     } else if (tapX > rightZone && currentPage < 3) {
       // 우측 터치 → 다음 페이지로 전환
       setCurrentPage(currentPage + 1);
       setSlideOffset(-screenWidth);
-      setTimeout(() => setSlideOffset(0), 300);
+      setTimeout(() => setSlideOffset(0), 500);
       if (currentPage === 0) setHasInteracted(true); // 첫번째 인터랙션 완료
     }
   };
@@ -256,6 +256,10 @@ export default function SNS2() {
     return '← 좌측 터치 | 우측 터치 →';
   };
 
+  // 슬라이드 애니메이션 시간 및 이징 변경
+  const SLIDE_ANIMATION_DURATION = 500; // ms
+  const SLIDE_TRANSITION = 'transform 0.5s cubic-bezier(0.33, 1, 0.68, 1)'; // 더 부드럽고 튀지 않게
+
   return (
     <>
       <Head>
@@ -296,28 +300,12 @@ export default function SNS2() {
             }}
           />
 
-          {/* 화면 터치 영역 안내 */}
-          <div style={{
-            position: 'absolute',
-            top: '10px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '20px',
-            padding: '8px 16px',
-            color: '#fff',
-            fontSize: '12px',
-            zIndex: 10,
-            pointerEvents: 'none',
-          }}>
-            {getGuideText()}
-          </div>
-          
           {/* sn.png 페이지 (0) */}
           <img
             src="/sns/sn.png"
             alt="SN"
+            loading="lazy"
+            decoding="async"
             style={{
               position: 'absolute',
               top: 'calc(50% - 90px)',
@@ -333,7 +321,7 @@ export default function SNS2() {
               zIndex: 3,
               cursor: isDragging ? 'grabbing' : 'grab',
               userSelect: 'none',
-              transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+              transition: isDragging ? 'none' : SLIDE_TRANSITION,
             }}
             // 터치 이벤트 (이벤트 전파 중단)
             onTouchStart={(e) => {
@@ -371,6 +359,8 @@ export default function SNS2() {
           <img
             src="/sns/day1.png"
             alt="Day 1"
+            loading="lazy"
+            decoding="async"
             style={{
               position: 'absolute',
               top: 'calc(50% - 40px)',
@@ -384,7 +374,7 @@ export default function SNS2() {
               display: 'block',
               background: 'transparent',
               zIndex: 2,
-              transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+              transition: isDragging ? 'none' : SLIDE_TRANSITION,
             }}
           />
 
@@ -392,6 +382,8 @@ export default function SNS2() {
           <img
             src="/sns/sn2.png"
             alt="SN2"
+            loading="lazy"
+            decoding="async"
             style={{
               position: 'absolute',
               top: 'calc(50% - 90px)',
@@ -407,7 +399,7 @@ export default function SNS2() {
               zIndex: 3,
               cursor: isDragging ? 'grabbing' : 'grab',
               userSelect: 'none',
-              transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+              transition: isDragging ? 'none' : SLIDE_TRANSITION,
             }}
             // 터치 이벤트 (이벤트 전파 중단)
             onTouchStart={(e) => {
@@ -445,6 +437,8 @@ export default function SNS2() {
           <img
             src="/sns/sn3.png"
             alt="SN3"
+            loading="lazy"
+            decoding="async"
             style={{
               position: 'absolute',
               top: 'calc(50% - 90px)',
@@ -460,7 +454,7 @@ export default function SNS2() {
               zIndex: 3,
               cursor: isDragging ? 'grabbing' : 'grab',
               userSelect: 'none',
-              transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+              transition: isDragging ? 'none' : SLIDE_TRANSITION,
             }}
             // 터치 이벤트 (이벤트 전파 중단)
             onTouchStart={(e) => {
@@ -494,11 +488,13 @@ export default function SNS2() {
             }}
           />
 
-          {/* to.png - 첫번째 인터랙션 후에만 표시 */}
-          {hasInteracted && (
+          {/* to.png - sn2.png(2페이지)에서만 표시 */}
+          {currentPage === 2 && (
             <img
               src="/sns/to.png"
               alt="To"
+              loading="lazy"
+              decoding="async"
               style={{
                 position: 'absolute',
                 top: 'calc(50% - 90px)',
@@ -515,7 +511,7 @@ export default function SNS2() {
                 cursor: 'pointer',
                 userSelect: 'none',
                 opacity: showMmap ? 0 : 1,
-                transition: isDragging ? 'none' : 'transform 0.3s ease-out, opacity 0.3s ease-out',
+                transition: isDragging ? 'none' : SLIDE_TRANSITION,
               }}
               onClick={handleToClick}
             />
@@ -533,13 +529,15 @@ export default function SNS2() {
                 maxWidth: 325,
                 height: 'auto',
                 zIndex: 6,
-                transition: isDragging ? 'none' : 'transform 0.3s ease-out, opacity 0.3s ease-out',
+                transition: isDragging ? 'none' : SLIDE_TRANSITION,
               }}
             >
               {/* sns tool.png 배경 */}
               <img
                 src="/sns/sns tool.png"
                 alt="SNS Tool"
+                loading="lazy"
+                decoding="async"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -555,11 +553,61 @@ export default function SNS2() {
                   setShowSnsTool(false);
                 }}
               />
-              
+              {/* 저장된 이미지가 있으면 sns tool.png 위에 겹쳐서 표시 */}
+              {capturedImage && (
+                <>
+                  {/* 날짜 텍스트 */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(18% - 90px)',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      color: '#fff',
+                      fontWeight: 700,
+                      fontSize: '1.1rem',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.45)',
+                      background: 'rgba(0,0,0,0.28)',
+                      borderRadius: '8px',
+                      padding: '4px 16px',
+                      zIndex: 9,
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '')}
+                  </div>
+                  <img
+                    src={capturedImage}
+                    alt="저장된 이미지"
+                    loading="lazy"
+                    decoding="async"
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(50% - 70px)',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '48vw',
+                      height: '48vw',
+                      minWidth: '48vw',
+                      minHeight: '48vw',
+                      maxWidth: '48vw',
+                      maxHeight: '48vw',
+                      objectFit: 'cover',
+                      aspectRatio: '1/1',
+                      borderRadius: '10px',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                      zIndex: 8,
+                      border: '2px solid #fff',
+                    }}
+                  />
+                </>
+              )}
               {/* plane.png - sns tool 위에서 80픽셀 아래 */}
               <img
                 src="/sns/plane.png"
                 alt="Plane"
+                loading="lazy"
+                decoding="async"
                 style={{
                   position: 'absolute',
                   top: '80px',
@@ -588,13 +636,15 @@ export default function SNS2() {
                 maxWidth: 325,
                 height: 'auto',
                 zIndex: 5,
-                transition: isDragging ? 'none' : 'transform 0.3s ease-out, opacity 0.3s ease-out',
+                transition: isDragging ? 'none' : SLIDE_TRANSITION,
               }}
             >
               {/* mmap.png 배경 */}
               <img
                 src="/sns/mmap.png"
                 alt="Mmap"
+                loading="lazy"
+                decoding="async"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -637,6 +687,8 @@ export default function SNS2() {
                   <img
                     src="/sns/cam.png"
                     alt="Camera"
+                    loading="lazy"
+                    decoding="async"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -684,6 +736,8 @@ export default function SNS2() {
                           <img
                             src={capturedImage}
                             alt="Captured"
+                            loading="lazy"
+                            decoding="async"
                             style={{
                               width: '100%',
                               height: '100%',
@@ -745,6 +799,8 @@ export default function SNS2() {
                         <img
                           src="/sns/save.png"
                           alt="Save"
+                          loading="lazy"
+                          decoding="async"
                           style={{
                             width: '100%',
                             height: '100%',
@@ -809,4 +865,6 @@ export default function SNS2() {
       </div>
     </>
   );
-} 
+}
+
+export default React.memo(SNS2); 
