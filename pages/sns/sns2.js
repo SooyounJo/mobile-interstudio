@@ -46,6 +46,9 @@ const SNS2 = () => {
   // 타이핑 완료 여부 상태
   const [typingDone, setTypingDone] = React.useState(false);
 
+  // 인터랙션 비활성화 여부(타이핑 완료 시 true)
+  const interactionDisabled = typingDone;
+
   // 화면 크기 감지 (클라이언트에서만 실행)
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -70,14 +73,14 @@ const SNS2 = () => {
 
   // 터치/마우스 시작
   const handleStart = (clientX) => {
-    if (capturedImage) return;
+    if (capturedImage || interactionDisabled) return;
     setDragStart(clientX);
     setIsDragging(true);
   };
 
   // 터치/마우스 이동
   const handleMove = (clientX) => {
-    if (capturedImage) return;
+    if (capturedImage || interactionDisabled) return;
     if (!isDragging || !dragStart) return;
     
     const deltaX = clientX - dragStart;
@@ -97,7 +100,7 @@ const SNS2 = () => {
 
   // 터치/마우스 종료 - 스냅 애니메이션
   const handleEnd = () => {
-    if (capturedImage) return;
+    if (capturedImage || interactionDisabled) return;
     const threshold = 100; // 페이지 전환 임계값
     
     if (slideOffset <= -threshold && currentPage < 3) {
@@ -122,7 +125,7 @@ const SNS2 = () => {
 
   // 화면 좌측/우측 터치로 페이지 전환
   const handleScreenTap = (e) => {
-    if (capturedImage) return;
+    if (capturedImage || interactionDisabled) return;
     // 드래그 중이면 무시
     if (isDragging) return;
     
@@ -158,6 +161,7 @@ const SNS2 = () => {
 
   // 카메라 촬영 핸들러
   const handleCameraClick = async (e) => {
+    if (interactionDisabled) return;
     e.stopPropagation();
     
     try {
@@ -401,7 +405,7 @@ const SNS2 = () => {
               position: 'absolute',
               top: 'calc(50% - 90px)',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 0 ? 0 : -screenWidth)}px), -50%)`,
+              transform: `translate(-50%, -50%) translateX(${slideOffset + (currentPage === 0 ? 0 : -screenWidth)}px)`,
               width: '68vw',
               maxWidth: 325,
               height: 'auto',
@@ -456,7 +460,7 @@ const SNS2 = () => {
               position: 'absolute',
               top: 'calc(50% - 40px)',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 1 ? 0 : currentPage < 1 ? screenWidth : -screenWidth)}px), -50%)`,
+              transform: `translate(-50%, -50%) translateX(${slideOffset + (currentPage === 1 ? 0 : currentPage < 1 ? screenWidth : -screenWidth)}px)`,
               width: '65vw',
               maxWidth: 310,
               height: 'auto',
@@ -479,7 +483,7 @@ const SNS2 = () => {
               position: 'absolute',
               top: 'calc(50% - 90px)',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 2 ? 0 : currentPage < 2 ? screenWidth : -screenWidth)}px), -50%)`,
+              transform: `translate(-50%, -50%) translateX(${slideOffset + (currentPage === 2 ? 0 : currentPage < 2 ? screenWidth : -screenWidth)}px)`,
               width: '68vw',
               maxWidth: 325,
               height: 'auto',
@@ -534,7 +538,7 @@ const SNS2 = () => {
               position: 'absolute',
               top: 'calc(50% - 90px)',
               left: '50%',
-              transform: `translate(calc(-50% + ${slideOffset + (currentPage === 3 ? 0 : screenWidth)}px), -50%)`,
+              transform: `translate(-50%, -50%) translateX(${slideOffset + (currentPage === 3 ? 0 : screenWidth)}px)`,
               width: '68vw',
               maxWidth: 325,
               height: 'auto',
@@ -590,7 +594,7 @@ const SNS2 = () => {
                 position: 'absolute',
                 top: 'calc(50% - 90px)',
                 left: '50%',
-                transform: `translate(calc(-50% + ${slideOffset}px), -50%)`,
+                transform: `translate(-50%, -50%) translateX(${slideOffset}px)`,
                 width: '68vw',
                 maxWidth: 325,
                 height: 'auto',
@@ -613,9 +617,9 @@ const SNS2 = () => {
             <div
               style={{
                 position: 'absolute',
-                top: 'calc(50% - 90px)',
-                left: 'calc(50% - 30px)', // 10px 더 우측 이동
-                transform: `translate(calc(-50% + ${slideOffset}px), -50%)`,
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '68vw',
                 maxWidth: 325,
                 height: 'auto',
@@ -651,8 +655,8 @@ const SNS2 = () => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: 'calc(18% - 90px)',
-                      left: 'calc(50% - 70px)',
+                      top: '-90px',
+                      left: '-70px',
                       transform: 'translate(-50%, -50%)',
                       color: '#fff',
                       fontWeight: 700,
@@ -664,9 +668,11 @@ const SNS2 = () => {
                       zIndex: 9,
                       pointerEvents: 'none',
                       whiteSpace: 'pre-line',
-                      overflow: 'visible',
-                      width: 'max-content',
-                      maxWidth: '90vw',
+                      overflow: 'hidden',
+                      width: '100%',
+                      maxWidth: '36vw',
+                      minWidth: 0,
+                      boxSizing: 'border-box',
                     }}
                   >
                     {typedDate || ''}
@@ -678,15 +684,15 @@ const SNS2 = () => {
                     decoding="async"
                     style={{
                       position: 'absolute',
-                      top: 'calc(50% - 70px)',
+                      top: '0',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '44vw',
-                      height: '44vw',
-                      minWidth: '44vw',
-                      minHeight: '44vw',
-                      maxWidth: '44vw',
-                      maxHeight: '44vw',
+                      width: '36vw',
+                      height: '36vw',
+                      minWidth: '36vw',
+                      minHeight: '36vw',
+                      maxWidth: '36vw',
+                      maxHeight: '36vw',
                       objectFit: 'cover',
                       aspectRatio: '1/1',
                       borderRadius: '10px',
@@ -699,9 +705,9 @@ const SNS2 = () => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: 'calc(50% - 70px + 44vw/2 + 13px)', // 10px 더 아래로
-                      left: 'calc(50% - 40px)', // 30px 더 좌측
-                      transform: 'translate(-50%, -50%)',
+                      top: 'calc(36vw/2 + 13px)',
+                      left: '-40px',
+                      transform: 'translate(-50%, 0)',
                       color: '#fff',
                       fontWeight: 600,
                       fontSize: '0.92rem',
@@ -711,9 +717,11 @@ const SNS2 = () => {
                       zIndex: 9,
                       pointerEvents: 'none',
                       whiteSpace: 'pre-line',
-                      overflow: 'visible',
-                      width: 'max-content',
-                      maxWidth: '90vw',
+                      overflow: 'hidden',
+                      width: '100%',
+                      maxWidth: '36vw',
+                      minWidth: 0,
+                      boxSizing: 'border-box',
                     }}
                   >
                     {typedLocation || ''}
@@ -723,19 +731,21 @@ const SNS2 = () => {
                     <div
                       style={{
                         position: 'absolute',
-                        top: 'calc(50% - 70px + 44vw/2 + 53px)', // 장소 문구보다 40px 더 아래
-                        left: 'calc(50% - 50px)', // 50px 좌측 이동
-                        transform: 'translate(-50%, -50%)',
-                        color: '#fff',
+                        top: 'calc(36vw/2 + 53px)',
+                        left: '-30px',
+                        transform: 'translate(-50%, 0)',
+                        color: '#111',
                         fontWeight: 500,
                         fontSize: '0.85rem',
                         textShadow: '0 2px 8px rgba(0,0,0,0.32)',
                         zIndex: 9,
                         pointerEvents: 'none',
                         whiteSpace: 'pre-line',
-                        overflow: 'visible',
-                        width: 'max-content',
-                        maxWidth: '90vw',
+                        overflow: 'hidden',
+                        width: '100%',
+                        maxWidth: '36vw',
+                        minWidth: 0,
+                        boxSizing: 'border-box',
                       }}
                     >
                       {typedUserName}
@@ -772,7 +782,7 @@ const SNS2 = () => {
                 position: 'absolute',
                 top: 'calc(50% - 90px)',
                 left: '50%',
-                transform: `translate(calc(-50% + ${slideOffset}px), -50%)`,
+                transform: `translate(-50%, -50%) translateX(${slideOffset}px)`,
                 width: '68vw',
                 maxWidth: 325,
                 height: 'auto',
@@ -845,7 +855,7 @@ const SNS2 = () => {
                         position: 'absolute',
                         top: 'calc(100% + 50px)',
                         left: '50%',
-                        transform: 'translateX(-50%)',
+                        transform: 'translate(-50%, -50%)',
                         zIndex: 7,
                         display: 'flex',
                         flexDirection: 'column',
@@ -1034,6 +1044,41 @@ const SNS2 = () => {
                 }}
               >
                 저장하러 가기
+              </button>
+            </div>
+          )}
+
+          {/* 타이핑이 모두 끝나면 상단에 '다른 사진도 저장하기' 버튼 */}
+          {typingDone && (
+            <div
+              style={{
+                position: 'fixed',
+                left: '50%',
+                top: '32px',
+                transform: 'translateX(-50%)',
+                zIndex: 101,
+                width: 'max-content',
+              }}
+            >
+              <button
+                style={{
+                  background: '#fff',
+                  color: '#2563eb',
+                  border: '2px solid #2563eb',
+                  borderRadius: '18px',
+                  padding: '10px 28px',
+                  fontSize: '1.02rem',
+                  fontWeight: 700,
+                  boxShadow: '0 2px 12px 0 #2563eb22',
+                  cursor: 'pointer',
+                  letterSpacing: '0.5px',
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => {
+                  window.location.href = '/sns';
+                }}
+              >
+                다른 사진도 저장하기
               </button>
             </div>
           )}
