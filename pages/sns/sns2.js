@@ -35,6 +35,16 @@ const SNS2 = () => {
   const [showMmap, setShowMmap] = React.useState(false); // mmap.png 표시 여부
   const [capturedImage, setCapturedImage] = React.useState(null); // 촬영된 이미지
   const [showSnsTool, setShowSnsTool] = React.useState(false); // sns tool.png 표시 여부
+  // 장소 문구 타이핑 효과 상태
+  const [typedLocation, setTypedLocation] = React.useState('');
+  // 날짜 타이핑 효과 상태
+  const [typedDate, setTypedDate] = React.useState('');
+  // 사용자 이름 상태 (인트로에서 localStorage에 저장된 값)
+  const [userName, setUserName] = React.useState('');
+  // 이름 타이핑 효과 상태
+  const [typedUserName, setTypedUserName] = React.useState('');
+  // 타이핑 완료 여부 상태
+  const [typingDone, setTypingDone] = React.useState(false);
 
   // 화면 크기 감지 (클라이언트에서만 실행)
   React.useEffect(() => {
@@ -50,14 +60,24 @@ const SNS2 = () => {
     }
   }, []);
 
+  // 마운트 시 localStorage에서 userName 불러오기
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const name = localStorage.getItem('userName') || '';
+      setUserName(name);
+    }
+  }, []);
+
   // 터치/마우스 시작
   const handleStart = (clientX) => {
+    if (capturedImage) return;
     setDragStart(clientX);
     setIsDragging(true);
   };
 
   // 터치/마우스 이동
   const handleMove = (clientX) => {
+    if (capturedImage) return;
     if (!isDragging || !dragStart) return;
     
     const deltaX = clientX - dragStart;
@@ -77,6 +97,7 @@ const SNS2 = () => {
 
   // 터치/마우스 종료 - 스냅 애니메이션
   const handleEnd = () => {
+    if (capturedImage) return;
     const threshold = 100; // 페이지 전환 임계값
     
     if (slideOffset <= -threshold && currentPage < 3) {
@@ -101,6 +122,7 @@ const SNS2 = () => {
 
   // 화면 좌측/우측 터치로 페이지 전환
   const handleScreenTap = (e) => {
+    if (capturedImage) return;
     // 드래그 중이면 무시
     if (isDragging) return;
     
@@ -259,6 +281,75 @@ const SNS2 = () => {
   // 슬라이드 애니메이션 시간 및 이징 변경
   const SLIDE_ANIMATION_DURATION = 500; // ms
   const SLIDE_TRANSITION = 'transform 0.5s cubic-bezier(0.33, 1, 0.68, 1)'; // 더 부드럽고 튀지 않게
+
+  // 타이핑 효과 적용(사진이 새로 생성될 때마다)
+  React.useEffect(() => {
+    if (capturedImage) {
+      const locationText = '석관동 한국예술종합학교';
+      const dateText = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '');
+      setTypedLocation('');
+      setTypedDate('');
+      let locIdx = 0;
+      let dateIdx = 0;
+      const locInterval = setInterval(() => {
+        if (locIdx < locationText.length) {
+          setTypedLocation((prev) => prev + locationText[locIdx]);
+          locIdx++;
+        } else {
+          clearInterval(locInterval);
+        }
+      }, 45);
+      const dateInterval = setInterval(() => {
+        if (dateIdx < dateText.length) {
+          setTypedDate((prev) => prev + dateText[dateIdx]);
+          dateIdx++;
+        } else {
+          clearInterval(dateInterval);
+        }
+      }, 45);
+      return () => {
+        clearInterval(locInterval);
+        clearInterval(dateInterval);
+      };
+    } else {
+      setTypedLocation('');
+      setTypedDate('');
+    }
+  }, [capturedImage]);
+
+  // 사진이 생성될 때마다 이름 타이핑 효과 적용
+  React.useEffect(() => {
+    if (capturedImage && userName) {
+      setTypedUserName('');
+      const fullText = `${userName}와 함께한 하루!`;
+      let idx = 0;
+      const interval = setInterval(() => {
+        if (idx < fullText.length) {
+          setTypedUserName((prev) => prev + fullText[idx]);
+          idx++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 45);
+      return () => clearInterval(interval);
+    } else {
+      setTypedUserName('');
+    }
+  }, [capturedImage, userName]);
+
+  // 타이핑 완료 체크(날짜, 장소, 이름 모두 끝나면 true)
+  React.useEffect(() => {
+    if (
+      capturedImage &&
+      typedDate.length === new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '').length &&
+      typedLocation.length === '석관동 한국예술종합학교'.length &&
+      (!userName || typedUserName.length === (`${userName}와 함께한 하루!`).length)
+    ) {
+      setTypingDone(true);
+    } else {
+      setTypingDone(false);
+    }
+  }, [typedDate, typedLocation, typedUserName, capturedImage, userName]);
 
   return (
     <>
@@ -523,7 +614,7 @@ const SNS2 = () => {
               style={{
                 position: 'absolute',
                 top: 'calc(50% - 90px)',
-                left: '50%',
+                left: 'calc(50% - 30px)', // 10px 더 우측 이동
                 transform: `translate(calc(-50% + ${slideOffset}px), -50%)`,
                 width: '68vw',
                 maxWidth: 325,
@@ -561,7 +652,7 @@ const SNS2 = () => {
                     style={{
                       position: 'absolute',
                       top: 'calc(18% - 90px)',
-                      left: '50%',
+                      left: 'calc(50% - 70px)',
                       transform: 'translate(-50%, -50%)',
                       color: '#fff',
                       fontWeight: 700,
@@ -569,12 +660,16 @@ const SNS2 = () => {
                       textShadow: '0 2px 8px rgba(0,0,0,0.45)',
                       background: 'rgba(0,0,0,0.28)',
                       borderRadius: '8px',
-                      padding: '4px 16px',
+                      padding: '4px 10px',
                       zIndex: 9,
                       pointerEvents: 'none',
+                      whiteSpace: 'pre-line',
+                      overflow: 'visible',
+                      width: 'max-content',
+                      maxWidth: '90vw',
                     }}
                   >
-                    {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '')}
+                    {typedDate || ''}
                   </div>
                   <img
                     src={capturedImage}
@@ -586,12 +681,12 @@ const SNS2 = () => {
                       top: 'calc(50% - 70px)',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '48vw',
-                      height: '48vw',
-                      minWidth: '48vw',
-                      minHeight: '48vw',
-                      maxWidth: '48vw',
-                      maxHeight: '48vw',
+                      width: '44vw',
+                      height: '44vw',
+                      minWidth: '44vw',
+                      minHeight: '44vw',
+                      maxWidth: '44vw',
+                      maxHeight: '44vw',
                       objectFit: 'cover',
                       aspectRatio: '1/1',
                       borderRadius: '10px',
@@ -600,6 +695,52 @@ const SNS2 = () => {
                       border: '2px solid #fff',
                     }}
                   />
+                  {/* 사진 바로 아래에 장소 문구 */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(50% - 70px + 44vw/2 + 13px)', // 10px 더 아래로
+                      left: 'calc(50% - 40px)', // 30px 더 좌측
+                      transform: 'translate(-50%, -50%)',
+                      color: '#fff',
+                      fontWeight: 600,
+                      fontSize: '0.92rem',
+                      textShadow: '0 2px 8px rgba(255, 255, 255, 0.35)',
+                      borderRadius: '8px',
+                      padding: '4px 10px',
+                      zIndex: 9,
+                      pointerEvents: 'none',
+                      whiteSpace: 'pre-line',
+                      overflow: 'visible',
+                      width: 'max-content',
+                      maxWidth: '90vw',
+                    }}
+                  >
+                    {typedLocation || ''}
+                  </div>
+                  {/* 사진 아래 40px 밑에 사용자 이름 문구 */}
+                  {typedUserName && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(50% - 70px + 44vw/2 + 53px)', // 장소 문구보다 40px 더 아래
+                        left: 'calc(50% - 50px)', // 50px 좌측 이동
+                        transform: 'translate(-50%, -50%)',
+                        color: '#fff',
+                        fontWeight: 500,
+                        fontSize: '0.85rem',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.32)',
+                        zIndex: 9,
+                        pointerEvents: 'none',
+                        whiteSpace: 'pre-line',
+                        overflow: 'visible',
+                        width: 'max-content',
+                        maxWidth: '90vw',
+                      }}
+                    >
+                      {typedUserName}
+                    </div>
+                  )}
                 </>
               )}
               {/* plane.png - sns tool 위에서 80픽셀 아래 */}
@@ -861,6 +1002,41 @@ const SNS2 = () => {
             animatingButton={animatingButton}
             router={router}
           />
+
+          {/* 타이핑이 모두 끝나면 하단에 저장하러 가기 버튼 */}
+          {typingDone && (
+            <div
+              style={{
+                position: 'fixed',
+                left: '50%',
+                bottom: '38px',
+                transform: 'translateX(-50%)',
+                zIndex: 100,
+                width: 'max-content',
+              }}
+            >
+              <button
+                style={{
+                  background: '#2563eb',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '18px',
+                  padding: '12px 36px',
+                  fontSize: '1.08rem',
+                  fontWeight: 700,
+                  boxShadow: '0 2px 12px 0 #2563eb44',
+                  cursor: 'pointer',
+                  letterSpacing: '0.5px',
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => {
+                  window.location.href = '/sns';
+                }}
+              >
+                저장하러 가기
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
