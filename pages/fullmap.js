@@ -549,7 +549,7 @@ export default function FullMap() {
             }}
           >
             <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10, color: '#2563eb' }}>체험 가이드</div>
-            <div style={{ marginBottom: 18 }}>
+            <div style={{ marginBottom: 18, fontSize: 16, fontWeight: 500, color: '#222' }}>
               <b>지퍼를 슬라이드</b>하고<br/>
               <b>말풍선</b>을 눌러<br/>
               <span style={{ color: '#2563eb' }}>클로지의 기록</span>을 확인해보세요!
