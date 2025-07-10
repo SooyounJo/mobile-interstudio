@@ -123,28 +123,28 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
-    // 카카오맵 스크립트 동적 로드
-    const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=3d51d40b37cd2ec7eab092b604cf4322&autoload=false`;
-    script.async = true;
-    document.head.appendChild(script);
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        const map = new window.kakao.maps.Map(document.getElementById('map'), {
-          center: gpsPosition ? new window.kakao.maps.LatLng(gpsPosition.lat, gpsPosition.lng) : new window.kakao.maps.LatLng(37.5665, 126.9780),
-          level: 3,
-        });
-        if (gpsPosition) {
-          new window.kakao.maps.Marker({
-            map,
-            position: new window.kakao.maps.LatLng(gpsPosition.lat, gpsPosition.lng),
-          });
-        }
-      });
-    };
-    return () => {
-      document.head.removeChild(script);
-    };
+    // 카카오맵 스크립트 동적 로드 (보안상 appkey 제거, 실제 서비스에서는 환경변수 등으로 관리 필요)
+    // const script = document.createElement('script');
+    // script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=3d51d40b37cd2ec7eab092b604cf4322&autoload=false`;
+    // script.async = true;
+    // document.head.appendChild(script);
+    // script.onload = () => {
+    //   window.kakao.maps.load(() => {
+    //     const map = new window.kakao.maps.Map(document.getElementById('map'), {
+    //       center: gpsPosition ? new window.kakao.maps.LatLng(gpsPosition.lat, gpsPosition.lng) : new window.kakao.maps.LatLng(37.5665, 126.9780),
+    //       level: 3,
+    //     });
+    //     if (gpsPosition) {
+    //       new window.kakao.maps.Marker({
+    //         map,
+    //         position: new window.kakao.maps.LatLng(gpsPosition.lat, gpsPosition.lng),
+    //       });
+    //     }
+    //   });
+    // };
+    // return () => {
+    //   document.head.removeChild(script);
+    // };
   }, [gpsPosition]);
 
   // 파일 선택 시 미리보기
