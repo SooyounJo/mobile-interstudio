@@ -102,6 +102,7 @@ export default function MapPage() {
   const [gpsPosition, setGpsPosition] = useState(null);
   const [saving, setSaving] = useState(false);
   const [activeBar, setActiveBar] = useState(2); // map이 2번 버튼
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
   // GPS 권한 요청 및 위치 정보 가져오기
   useEffect(() => {
@@ -123,7 +124,12 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
-    // 카카오맵 스크립트 동적 로드 (보안상 appkey 제거, 실제 서비스에서는 환경변수 등으로 관리 필요)
+    // 입장 2초 후 모달 표시
+    const timer = setTimeout(() => setShowGuideModal(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 카카오맵 스크립트 동적 로드 (보안상 appkey 제거, 실제 서비스에서는 환경변수 등으로 관리 필요)
     // const script = document.createElement('script');
     // script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=3d51d40b37cd2ec7eab092b604cf4322&autoload=false`;
     // script.async = true;
@@ -163,6 +169,64 @@ export default function MapPage() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f5f8ff', position: 'relative' }}>
+      {/* 안내 모달 */}
+      {showGuideModal && (
+        <div
+          onClick={() => setShowGuideModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.38)',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 18,
+              boxShadow: '0 6px 32px #2563eb33',
+              padding: '32px 28px 24px 28px',
+              maxWidth: 320,
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: 600,
+              color: '#222',
+              lineHeight: 1.7,
+            }}
+          >
+            <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10, color: '#2563eb' }}>체험 가이드</div>
+            <div style={{ marginBottom: 18 }}>
+              <b>지퍼를 슬라이드</b>하고<br/>
+              <b>말풍선</b>을 눌러<br/>
+              <span style={{ color: '#2563eb' }}>클로지의 기록</span>을 확인해보세요!
+            </div>
+            <button
+              onClick={() => setShowGuideModal(false)}
+              style={{
+                marginTop: 8,
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 12,
+                padding: '10px 28px',
+                fontSize: 16,
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px #2563eb22',
+              }}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
       {/* 좌측 상단 뒤로가기 버튼 */}
       <button
         onClick={() => router.push('/sns')}

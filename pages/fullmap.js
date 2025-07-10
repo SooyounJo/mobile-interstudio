@@ -13,6 +13,7 @@ export default function FullMap() {
   const [currentVideo, setCurrentVideo] = useState('/map/move.mp4'); // 현재 영상 소스
   const [videoTransition, setVideoTransition] = useState(false); // 비디오 전환 상태
   const router = useRouter();
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
   // useAnimations 훅에서 activeBar와 관련 상태들 가져오기
   const { 
@@ -201,6 +202,12 @@ export default function FullMap() {
     setShowModal(false);
     setSelectedLocation(null);
   };
+
+  React.useEffect(() => {
+    // 입장 2초 후 모달 표시
+    const timer = setTimeout(() => setShowGuideModal(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div
@@ -443,7 +450,7 @@ export default function FullMap() {
               paddingBottom: '12px',
             }}>
               <h2 style={{
-                fontSize: '20px',
+                fontSize: '22px',
                 fontWeight: 'bold',
                 color: '#2563eb',
                 margin: 0,
@@ -455,7 +462,7 @@ export default function FullMap() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  fontSize: '24px',
+                  fontSize: '22px',
                   cursor: 'pointer',
                   color: '#666',
                   padding: '4px',
@@ -468,14 +475,14 @@ export default function FullMap() {
             {/* 모달 내용 */}
             <div style={{ marginBottom: '16px' }}>
               <div style={{
-                fontSize: '14px',
+                fontSize: '16px',
                 color: '#666',
                 marginBottom: '8px',
               }}>
                 📍 {selectedLocation.country}
               </div>
               <p style={{
-                fontSize: '16px',
+                fontSize: '18px',
                 lineHeight: '1.5',
                 color: '#333',
                 margin: 0,
@@ -499,13 +506,71 @@ export default function FullMap() {
                   border: 'none',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '16px',
                   fontWeight: '600',
                 }}
               >
                 닫기
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* 체험 가이드 모달 */}
+      {showGuideModal && (
+        <div
+          onClick={() => setShowGuideModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.38)',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 18,
+              boxShadow: '0 6px 32px #2563eb33',
+              padding: '32px 28px 24px 28px',
+              maxWidth: 320,
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: 600,
+              color: '#222',
+              lineHeight: 1.7,
+            }}
+          >
+            <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10, color: '#2563eb' }}>체험 가이드</div>
+            <div style={{ marginBottom: 18 }}>
+              <b>지퍼를 슬라이드</b>하고<br/>
+              <b>말풍선</b>을 눌러<br/>
+              <span style={{ color: '#2563eb' }}>클로지의 기록</span>을 확인해보세요!
+            </div>
+            <button
+              onClick={() => setShowGuideModal(false)}
+              style={{
+                marginTop: 8,
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 12,
+                padding: '10px 28px',
+                fontSize: 16,
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px #2563eb22',
+              }}
+            >
+              확인
+            </button>
           </div>
         </div>
       )}
